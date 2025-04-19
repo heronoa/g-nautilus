@@ -28,4 +28,8 @@ export interface IProfile {
   following: number;
   createdAt: Date | null;
   updatedAt: Date | null;
+  nodeId?: string | null;
+  gravatarId?: string | null;
+  url?: string | null;
+  userViewType?: string | null;
 }

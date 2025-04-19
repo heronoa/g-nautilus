@@ -44,5 +44,9 @@ export const normalizeProfiles = (
     following: profile.following,
     createdAt: parseDate(profile.created_at),
     updatedAt: parseDate(profile.updated_at),
+    gravatarId: profile.gravatar_id || "",
+    nodeId: profile.node_id || "",
+    url: isValidUrl(profile.url) ? profile.url : "",
+    userViewType: profile.user_view_type || "",
   }));
 };

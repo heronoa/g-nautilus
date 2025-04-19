@@ -50,14 +50,16 @@ export const githubService = {
   async getUserProfile(
     username: string,
     options?: queryOptions
-  ): Promise<IGithubUserProfile> {
+  ): Promise<IProfile> {
     try {
       const url = `/users/${username}${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
       const response = await axiosInstance.get(url);
 
       const userProfile: IGithubUserProfile = await response.data;
 
-      return userProfile;
+      const normalizeProfile: IProfile = normalizeProfiles([userProfile])[0];
+
+      return normalizeProfile;
     } catch (error) {
       throw new Error(`GitHub API error: ${error}`);
     }
@@ -66,13 +68,15 @@ export const githubService = {
   async getUserStarredRepos(
     username: string,
     options?: queryOptions
-  ): Promise<IRawRepository[]> {
+  ): Promise<IRepository[]> {
     try {
       const url = `/users/${username}/starred${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
       const response = await axiosInstance.get(url);
       const starredRepos: IRawRepository[] = await response.data;
+      const normalizedStarredRepos: IRepository[] =
+        normalizeRepos(starredRepos);
 
-      return starredRepos;
+      return normalizedStarredRepos;
     } catch (error) {
       throw new Error(`GitHub API error: ${error}`);
     }
@@ -81,13 +85,13 @@ export const githubService = {
   async getUserRepos(
     username: string,
     options?: queryOptions
-  ): Promise<IRawRepository[]> {
+  ): Promise<IRepository[]> {
     try {
       const url = `/users/${username}/repos${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
       const response = await axiosInstance.get(url);
       const repos: IRawRepository[] = await response.data;
-
-      return repos;
+      const normalizedRepos: IRepository[] = normalizeRepos(repos);
+      return normalizedRepos;
     } catch (error) {
       throw new Error(`GitHub API error: ${error}`);
     }

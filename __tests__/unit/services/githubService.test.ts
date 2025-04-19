@@ -1,4 +1,7 @@
-import { axiosInstance as mockedAxiosInstance } from "@/tests/mocks";
+import {
+  axiosInstance as mockedAxiosInstance,
+  mockRawUserProfile,
+} from "@/tests/mocks";
 jest.mock("@/services/axiosGithubInstance", () => mockedAxiosInstance);
 
 import { githubService } from "@/services/githubService";
@@ -57,17 +60,15 @@ describe("Github Service - getUserProfile", () => {
 
   it("should fetch user profile successfully", async () => {
     (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
-      data: mockUserProfile,
+      data: mockRawUserProfile,
     });
 
-    const username = "octocat";
+    const username = "mockuser";
     const profile = await githubService.getUserProfile(username);
 
     expect(profile).toEqual(mockUserProfile);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
-    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `/users/${username}`
-    );
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(`/users/${username}`);
   });
 
   it("should handle fetch error", async () => {

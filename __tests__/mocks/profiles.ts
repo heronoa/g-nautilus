@@ -1,6 +1,6 @@
-import { IGithubUserProfile } from "@/types";
+import { IGithubUserProfile, IProfile } from "@/types";
 
-export const mockUserProfile: IGithubUserProfile = {
+export const mockRawUserProfile: IGithubUserProfile = {
   login: "mockuser",
   name: "Mock User",
   bio: "This is a mocked user profile for testing purposes.",
@@ -34,4 +34,40 @@ export const mockUserProfile: IGithubUserProfile = {
   hireable: true,
   twitter_username: "mockuser",
   public_gists: 10,
+};
+
+export const mockUserProfile: IProfile = {
+  avatarUrl: "https://example.com/avatar.png",
+  bio: "This is a mocked user profile for testing purposes.",
+  blog: "https://mockuser.dev",
+  company: "Mock Company",
+  createdAt: new Date("2020-01-01T00:00:00.000Z"), // Certifique-se de que as datas estão corretas
+  email: "mockuser@example.com",
+  eventsUrl: "https://api.github.com/users/mockuser/events{/privacy}",
+  followers: 100,
+  followersUrl: "https://api.github.com/users/mockuser/followers",
+  following: 50,
+  followingUrl: "https://api.github.com/users/mockuser/following{/other_user}",
+  gistsUrl: "https://api.github.com/users/mockuser/gists{/gist_id}",
+  gravatarId: "",
+  hireable: true,
+  htmlUrl: "https://github.com/mockuser",
+  id: 123456,
+  location: "Mock City, Mockland",
+  login: "mockuser",
+  name: "Mock User",
+  nodeId: "MDQ6VXNlcjEyMzQ1Ng==",
+  organizationsUrl: "https://api.github.com/users/mockuser/orgs",
+  publicGists: 10,
+  publicRepos: 42,
+  receivedEventsUrl: "https://api.github.com/users/mockuser/received_events",
+  reposUrl: "https://api.github.com/users/mockuser/repos",
+  siteAdmin: false,
+  starredUrl: "https://api.github.com/users/mockuser/starred{/owner}{/repo}",
+  subscriptionsUrl: "https://api.github.com/users/mockuser/subscriptions",
+  twitterUsername: "mockuser",
+  type: "User",
+  updatedAt: new Date("2023-01-01T00:00:00.000Z"),
+  url: "https://api.github.com/users/mockuser",
+  userViewType: "Public",
 };
