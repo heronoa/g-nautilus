@@ -11,6 +11,7 @@ const config: Config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   coveragePathIgnorePatterns: ["/node_modules/", "/.next/", "/cypress/"],
   testPathIgnorePatterns: ["/node_modules/", "/.next/", "/cypress/"],
+  testMatch: ["**/?(*.)+(test).[tj]s?(x)"],
 };
 
 export default createJestConfig(config);
