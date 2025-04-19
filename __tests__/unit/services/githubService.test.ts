@@ -80,4 +80,110 @@ describe("Github Service - getUserProfile", () => {
     );
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
   });
+
+  it("should obbey pagination options", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: mockUserProfile,
+    });
+
+    const username = "octocat";
+    const options = { page: 2, perPage: 10 };
+    await githubService.getUserProfile(username, options);
+
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+      `https://api.github.com/users/${username}?page=${options.page}&per_page=${options.perPage}`
+    );
+  });
+});
+
+describe("Github Service - getUserStarredRepos", () => {
+  beforeEach(() => {
+    (mockedAxiosInstance.get as jest.Mock).mockClear();
+  });
+
+  it("should fetch starred repositories successfully", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: mockRepos,
+    });
+
+    const username = "octocat";
+    const repos = await githubService.getUserStarredRepos(username);
+
+    expect(repos).toEqual(mockRepos);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+      `https://api.github.com/users/${username}/starred`
+    );
+  });
+
+  it("should handle fetch error", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockRejectedValueOnce(
+      new Error("GitHub API error: 500")
+    );
+
+    await expect(githubService.getUserStarredRepos("octocat")).rejects.toThrow(
+      "GitHub API error: 500"
+    );
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+  });
+
+  it("should obbey pagination options", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: mockRepos,
+    });
+
+    const username = "octocat";
+    const options = { page: 2, perPage: 10 };
+    await githubService.getUserStarredRepos(username, options);
+
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+      `https://api.github.com/users/${username}/starred?page=${options.page}&per_page=${options.perPage}`
+    );
+  });
+});
+
+describe("Github Service - getUserRepos", () => {
+  beforeEach(() => {
+    (mockedAxiosInstance.get as jest.Mock).mockClear();
+  });
+
+  it("should fetch user repositories successfully", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: mockRepos,
+    });
+
+    const username = "octocat";
+    const repos = await githubService.getUserRepos(username);
+
+    expect(repos).toEqual(mockRepos);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+      `https://api.github.com/users/${username}/repos`
+    );
+  });
+
+  it("should handle fetch error", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockRejectedValueOnce(
+      new Error("GitHub API error: 500")
+    );
+
+    await expect(githubService.getUserRepos("octocat")).rejects.toThrow(
+      "GitHub API error: 500"
+    );
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+  });
+
+  it("should obbey pagination options", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: mockRepos,
+    });
+
+    const username = "octocat";
+    const options = { page: 2, perPage: 10 };
+    await githubService.getUserRepos(username, options);
+
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+      `https://api.github.com/users/${username}/repos?page=${options.page}&per_page=${options.perPage}`
+    );
+  });
 });
