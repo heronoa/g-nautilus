@@ -170,3 +170,12 @@ describe("Github Service - getUserRepos", () => {
     expect(Array.isArray(repos)).toBe(true);
   });
 });
+
+describe("Github Service - searchUsers", () => {
+  it("should fetch users successfully", async () => {
+    const users = await githubService.searchUsers("octocat");
+
+    expect(users).toBeDefined();
+    expect(Array.isArray(users)).toBe(true);
+  });
+});

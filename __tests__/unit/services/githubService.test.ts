@@ -53,6 +53,51 @@ describe("Github Service - searchRepos", () => {
   });
 });
 
+describe("Github Service - searchUsers", () => {
+  beforeEach(() => {
+    (mockedAxiosInstance.get as jest.Mock).mockClear();
+  });
+  it("should fetch users successfully", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: {
+        items: [mockRawUserProfile],
+      },
+    });
+
+    const users = await githubService.searchUsers("octocat");
+
+    expect(users).toEqual([mockUserProfile]);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+      "/search/users?q=octocat"
+    );
+  });
+
+  it("should handle fetch error", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockRejectedValueOnce(
+      new Error("GitHub API error: 500")
+    );
+
+    await expect(githubService.searchUsers("octocat")).rejects.toThrow(
+      "GitHub API error: 500"
+    );
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+  });
+  
+  it("should return empty array when no users are found", async () => {
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: {
+        items: [],
+      },
+    });
+
+    const users = await githubService.searchUsers("nonexistentuser");
+
+    expect(users).toEqual([]);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("Github Service - getUserProfile", () => {
   beforeEach(() => {
     (mockedAxiosInstance.get as jest.Mock).mockClear();
