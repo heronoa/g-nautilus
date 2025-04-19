@@ -1,5 +1,5 @@
 import { axiosInstance as mockedAxiosInstance } from "@/tests/mocks";
-jest.mock("@/services/axiosInstance", () => mockedAxiosInstance);
+jest.mock("@/services/axiosGithubInstance", () => mockedAxiosInstance);
 
 import { githubService } from "@/services/githubService";
 import { mockRepos, mockUserProfile } from "@/tests/mocks";
@@ -21,7 +21,7 @@ describe("Github Service - searchRepos", () => {
     expect(repos).toEqual(mockRepos);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      "https://api.github.com/search/repositories?q=react"
+      "/search/repositories?q=react"
     );
   });
 
@@ -66,7 +66,7 @@ describe("Github Service - getUserProfile", () => {
     expect(profile).toEqual(mockUserProfile);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${username}`
+      `/users/${username}`
     );
   });
 
@@ -91,7 +91,7 @@ describe("Github Service - getUserProfile", () => {
     await githubService.getUserProfile(username, options);
 
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${username}?page=${options.page}&per_page=${options.perPage}`
+      `/users/${username}?page=${options.page}&per_page=${options.perPage}`
     );
   });
 });
@@ -112,7 +112,7 @@ describe("Github Service - getUserStarredRepos", () => {
     expect(repos).toEqual(mockRepos);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${username}/starred`
+      `/users/${username}/starred`
     );
   });
 
@@ -137,7 +137,7 @@ describe("Github Service - getUserStarredRepos", () => {
     await githubService.getUserStarredRepos(username, options);
 
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${username}/starred?page=${options.page}&per_page=${options.perPage}`
+      `/users/${username}/starred?page=${options.page}&per_page=${options.perPage}`
     );
   });
 });
@@ -158,7 +158,7 @@ describe("Github Service - getUserRepos", () => {
     expect(repos).toEqual(mockRepos);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${username}/repos`
+      `/users/${username}/repos`
     );
   });
 
@@ -183,7 +183,7 @@ describe("Github Service - getUserRepos", () => {
     await githubService.getUserRepos(username, options);
 
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${username}/repos?page=${options.page}&per_page=${options.perPage}`
+      `/users/${username}/repos?page=${options.page}&per_page=${options.perPage}`
     );
   });
 });

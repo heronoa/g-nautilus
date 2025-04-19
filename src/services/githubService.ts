@@ -1,7 +1,12 @@
 import { normalizeRepos } from "@/utils/normalizeRepos";
-import { IGithubUserProfile, IRawRepository, IRepository } from "@/types";
-import { C } from "@/utils";
-import axiosInstance from "./axiosInstance";
+import {
+  IGithubSearchRepoDTO,
+  IGithubSearchUserDTO,
+  IGithubUserProfile,
+  IRawRepository,
+  IRepository,
+} from "@/types";
+import axiosInstance from "./axiosGithubInstance";
 
 interface queryOptions {
   page?: number;
@@ -14,12 +19,27 @@ export const githubService = {
     options?: queryOptions
   ): Promise<IRepository[]> {
     try {
-      const url = `${C.GITHUB_API_URL}/search/repositories?q=${query}${options ? `&page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const url = `/search/repositories?q=${query}${options ? `&page=${options?.page}&per_page=${options?.perPage}` : ""}`;
 
       const response = await axiosInstance.get(url);
 
-      const rawData: { items: IRawRepository[] } = await response.data;
+      const rawData: IGithubSearchRepoDTO = await response.data;
       return normalizeRepos(rawData.items);
+    } catch (error) {
+      throw new Error(`GitHub API error: ${error}`);
+    }
+  },
+
+  async searchUsers(
+    query: string,
+    options?: queryOptions
+  ): Promise<IGithubUserProfile[]> {
+    try {
+      const url = `/search/users?q=${query}${options ? `&page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const response = await axiosInstance.get(url);
+      const rawData: IGithubSearchUserDTO = await response.data;
+      const users: IGithubUserProfile[] = rawData.items;
+      return users;
     } catch (error) {
       throw new Error(`GitHub API error: ${error}`);
     }
@@ -30,11 +50,10 @@ export const githubService = {
     options?: queryOptions
   ): Promise<IGithubUserProfile> {
     try {
-      const url = `${C.GITHUB_API_URL}/users/${username}${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const url = `/users/${username}${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
       const response = await axiosInstance.get(url);
 
       const userProfile: IGithubUserProfile = await response.data;
-      console.log({ response, userProfile });
 
       return userProfile;
     } catch (error) {
@@ -47,7 +66,7 @@ export const githubService = {
     options?: queryOptions
   ): Promise<IRawRepository[]> {
     try {
-      const url = `${C.GITHUB_API_URL}/users/${username}/starred${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const url = `/users/${username}/starred${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
       const response = await axiosInstance.get(url);
       const starredRepos: IRawRepository[] = await response.data;
 
@@ -62,7 +81,7 @@ export const githubService = {
     options?: queryOptions
   ): Promise<IRawRepository[]> {
     try {
-      const url = `${C.GITHUB_API_URL}/users/${username}/repos${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const url = `/users/${username}/repos${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
       const response = await axiosInstance.get(url);
       const repos: IRawRepository[] = await response.data;
 
