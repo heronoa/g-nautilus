@@ -1,46 +1,51 @@
+import { axiosInstance as mockedAxiosInstance } from "@/tests/mocks";
+jest.mock("@/services/axiosInstance", () => mockedAxiosInstance);
+
 import { githubService } from "@/services/githubService";
 import { mockRepos } from "@/tests/mocks";
 
-describe("searchRepos", () => {
+describe("Github Service - searchRepos", () => {
   beforeEach(() => {
-    (fetch as jest.Mock).mockClear(); // Limpa o mock a cada teste
+    (mockedAxiosInstance.get as jest.Mock).mockClear();
   });
 
   it("should fetch repositories successfully", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: jest.fn().mockResolvedValueOnce({ items: mockRepos }),
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: {
+        items: mockRepos,
+      },
     });
 
     const repos = await githubService.searchRepos("react");
 
     expect(repos).toEqual(mockRepos);
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
       "https://api.github.com/search/repositories?q=react"
     );
   });
 
   it("should handle fetch error", async () => {
-    (fetch as jest.Mock).mockRejectedValueOnce(new Error("API Error"));
+    (mockedAxiosInstance.get as jest.Mock).mockRejectedValueOnce(
+      new Error("GitHub API error: 500")
+    );
 
     await expect(githubService.searchRepos("react")).rejects.toThrow(
-      "API Error"
+      "GitHub API error: 500"
     );
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
   });
 
   it("should return empty array when no repos are found", async () => {
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: jest.fn().mockResolvedValueOnce({ items: [] }),
+    (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+      data: {
+        items: [],
+      },
     });
 
     const repos = await githubService.searchRepos("nonexistentrepo");
 
     expect(repos).toEqual([]);
-    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
   });
 });
