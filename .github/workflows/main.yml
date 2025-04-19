@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  test-and-analyze:
+    name: Run Tests and Analyze Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Unit Tests
+        run: npm run test
+
+      - name: Verify Tests Passed
+        run: |
+          if [ ${{ job.status }} != "success" ]; then
+            echo "Tests failed, skipping deploy."
+            exit 1
+          fi
+
+      - name: Run Code Quality Analysis
+        run: npm run lint
+
+      - name: Build Project
+        run: npm run build
