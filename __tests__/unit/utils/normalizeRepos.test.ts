@@ -19,6 +19,11 @@ describe("normalizeRepos function", () => {
       expect(repo.owner).toHaveProperty("login");
       expect(repo.owner).toHaveProperty("avatar_url");
       expect(repo.owner).toHaveProperty("html_url");
+      expect(repo).toHaveProperty("watchers_count");
+      expect(repo).toHaveProperty("fork");
+      expect(repo).toHaveProperty("archived");
+      expect(repo).toHaveProperty("pushed_at");
+      expect(repo).toHaveProperty("created_at");
     });
   });
 
@@ -51,5 +56,10 @@ describe("normalizeRepos function", () => {
     expect(result[result.length - 1].owner.login).toBe("Unknown");
     expect(result[result.length - 1].owner.avatar_url).toBe("");
     expect(result[result.length - 1].owner.html_url).toBe("");
+    expect(result[result.length - 1].watchers_count).toEqual(0);
+    expect(result[result.length - 1].fork).toBe(false);
+    expect(result[result.length - 1].archived).toBe(false);
+    expect(result[result.length - 1].pushed_at).toBeNull();
+    expect(result[result.length - 1].created_at).toBeNull();
   });
 });

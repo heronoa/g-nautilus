@@ -16,6 +16,11 @@ export const mockRawRepos: IRawRepository[] = [
       type: "",
       site_admin: false,
     },
+    pushed_at: "2025-04-18T00:00:00Z",
+    watchers_count: 0,
+    fork: false,
+    archived: false,
+    created_at: "2025-04-18T00:00:00Z",
   },
   {
     id: 2,
@@ -32,6 +37,11 @@ export const mockRawRepos: IRawRepository[] = [
       type: "",
       site_admin: false,
     },
+    pushed_at: "2025-04-17T00:00:00Z",
+    watchers_count: 0,
+    fork: false,
+    archived: false,
+    created_at: "2025-04-17T00:00:00Z",
   },
 ];
 
@@ -48,6 +58,11 @@ export const mockRepos: IRepository[] = [
       avatar_url: "https://avatars.githubusercontent.com/u/1?v=4",
       html_url: "https://github.com/user1",
     },
+    pushed_at: new Date("2025-04-18T00:00:00Z"),
+    watchers_count: 0,
+    fork: false,
+    archived: false,
+    created_at: new Date("2025-04-18T00:00:00Z"),
   },
   {
     id: 2,
@@ -61,5 +76,10 @@ export const mockRepos: IRepository[] = [
       avatar_url: "https://avatars.githubusercontent.com/u/2?v=4",
       html_url: "https://github.com/user1",
     },
+    pushed_at: new Date("2025-04-17T00:00:00Z"),
+    watchers_count: 0,
+    fork: false,
+    archived: false,
+    created_at: new Date("2025-04-17T00:00:00Z"),
   },
 ];

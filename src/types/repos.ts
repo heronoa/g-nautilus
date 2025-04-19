@@ -17,4 +17,9 @@ export interface IRepository {
     avatar_url: string;
     html_url: string | undefined;
   };
+  watchers_count: number;
+  fork: boolean;
+  archived: boolean;
+  pushed_at?: Date | null;
+  created_at?: Date | null;
 }
