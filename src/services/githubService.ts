@@ -3,10 +3,12 @@ import {
   IGithubSearchRepoDTO,
   IGithubSearchUserDTO,
   IGithubUserProfile,
+  IProfile,
   IRawRepository,
   IRepository,
 } from "@/types";
 import axiosInstance from "./axiosGithubInstance";
+import { normalizeProfiles } from "@/utils/normalizeProfiles";
 
 interface queryOptions {
   page?: number;
@@ -33,12 +35,12 @@ export const githubService = {
   async searchUsers(
     query: string,
     options?: queryOptions
-  ): Promise<IGithubUserProfile[]> {
+  ): Promise<IProfile[]> {
     try {
       const url = `/search/users?q=${query}${options ? `&page=${options?.page}&per_page=${options?.perPage}` : ""}`;
       const response = await axiosInstance.get(url);
       const rawData: IGithubSearchUserDTO = await response.data;
-      const users: IGithubUserProfile[] = rawData.items;
+      const users: IProfile[] = normalizeProfiles(rawData.items);
       return users;
     } catch (error) {
       throw new Error(`GitHub API error: ${error}`);

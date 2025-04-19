@@ -15,6 +15,18 @@ export interface ILicense {
   node_id: string;
 }
 
+export interface IGithubSearchRepoDTO {
+  total_count: number;
+  incomplete_results: boolean;
+  items: IGithubRepository[];
+}
+
+export interface IGithubSearchUserDTO {
+  total_count: number;
+  incomplete_results: boolean;
+  items: IGithubUserProfile[];
+}
+
 export interface IGithubRepository {
   id: number;
   node_id: string;
