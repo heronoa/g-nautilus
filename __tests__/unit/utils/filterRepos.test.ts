@@ -1,36 +1,62 @@
-import { filterByLanguage, filterByName, sortRepos } from "@/utils/filterRepos";
+import {
+  filterByFork,
+  filterByMirror,
+  filterBySource,
+  filterByArchived,
+  filterAndSortRepos,
+  sortRepos,
+} from "@/utils/filterRepos";
 import { mockRepos } from "@/tests/mocks";
+import { RepoFilters } from "@/types";
 
 describe("Repository filtering and sorting functions", () => {
-  describe("filterByLanguage", () => {
-    it("should return only repositories of the selected language", () => {
-      const result = filterByLanguage(mockRepos, "JavaScript");
-      expect(result).toHaveLength(1);
-      expect(result[0].language).toBe("JavaScript");
+  describe("filterByFork", () => {
+    it("should filter forks when onlyForks is true", () => {
+      const result = filterByFork(mockRepos, true);
+      expect(result).toEqual(mockRepos.filter((repo) => repo.fork));
     });
 
-    it('should return all repositories when language is "All"', () => {
-      const result = filterByLanguage(mockRepos, "All");
-      expect(result).toHaveLength(mockRepos.length);
+    it("should return all repos when onlyForks is false", () => {
+      const result = filterByFork(mockRepos, false);
+      expect(result).toEqual(mockRepos);
     });
   });
 
-  describe("filterByName", () => {
-    it("should return repositories that contain the search term in the name", () => {
-      const result = filterByName(mockRepos, "repo-1");
-      expect(result).toHaveLength(1);
-      expect(result[0].name).toBe("repo-1");
+  describe("filterByMirror", () => {
+    it("should filter mirrors when onlyMirrors is true", () => {
+      const result = filterByMirror(mockRepos, true);
+      expect(result).toEqual(mockRepos.filter((repo) => repo.mirrorUrl));
     });
 
-    it("should return repositories ignoring case sensitivity", () => {
-      const result = filterByName(mockRepos, "Repo-1");
-      expect(result).toHaveLength(1);
-      expect(result[0].name).toBe("repo-1");
+    it("should return all repos when onlyMirrors is false", () => {
+      const result = filterByMirror(mockRepos, false);
+      expect(result).toEqual(mockRepos);
+    });
+  });
+
+  describe("filterBySource", () => {
+    it("should filter sources when onlySources is true", () => {
+      const result = filterBySource(mockRepos, true);
+      expect(result).toEqual(
+        mockRepos.filter((repo) => !repo?.fork && !repo?.mirrorUrl)
+      );
     });
 
-    it("should return an empty array when no repositories match the search term", () => {
-      const result = filterByName(mockRepos, "non-existent-repo");
-      expect(result).toHaveLength(0);
+    it("should return all repos when onlySources is false", () => {
+      const result = filterBySource(mockRepos, false);
+      expect(result).toEqual(mockRepos);
+    });
+  });
+
+  describe("filterByArchived", () => {
+    it("should filter archived when onlyArchived is true", () => {
+      const result = filterByArchived(mockRepos, true);
+      expect(result).toEqual(mockRepos.filter((repo) => repo?.archived));
+    });
+
+    it("should return all repos when onlyArchived is false", () => {
+      const result = filterByArchived(mockRepos, false);
+      expect(result).toEqual(mockRepos);
     });
   });
 
@@ -44,14 +70,68 @@ describe("Repository filtering and sorting functions", () => {
 
     it("should sort repositories by updated date in descending order", () => {
       const result = sortRepos(mockRepos, "updated");
-      expect(result[0].updated_at?.getTime() ?? 0).toBeGreaterThanOrEqual(
-        result[1].updated_at?.getTime() ?? 0
+      expect(result[0].updatedAt?.getTime() ?? 0).toBeGreaterThanOrEqual(
+        result[1].updatedAt?.getTime() ?? 0
       );
     });
 
     it("should return the same array if the sorting criteria is invalid", () => {
       const result = sortRepos(mockRepos, "invalid" as never);
       expect(result).toEqual(mockRepos);
+    });
+  });
+
+  describe("filterAndSortRepos", () => {
+    it("should apply search filter", () => {
+      const result = filterAndSortRepos(mockRepos, { searchParam: "repo-1" });
+      expect(result).toEqual(
+        mockRepos.filter((repo) => repo.name.includes("repo-1"))
+      );
+    });
+
+    it("should apply fork filter", () => {
+      const result = filterAndSortRepos(mockRepos, { onlyForks: true });
+      expect(result).toEqual(mockRepos.filter((repo) => repo.fork));
+    });
+
+    it("should apply mirror filter", () => {
+      const result = filterAndSortRepos(mockRepos, { onlyMirrors: true });
+      expect(result).toEqual(mockRepos.filter((repo) => repo.mirrorUrl));
+    });
+
+    it("should apply source filter", () => {
+      const result = filterAndSortRepos(mockRepos, { onlySources: true });
+      expect(result).toEqual(
+        mockRepos.filter((repo) => !repo?.fork && !repo?.mirrorUrl)
+      );
+    });
+
+    it("should apply archived filter", () => {
+      const result = filterAndSortRepos(mockRepos, { onlyArchived: true });
+      expect(result).toEqual(mockRepos.filter((repo) => repo?.archived));
+    });
+
+    it("should apply combined filters", () => {
+      const filters: RepoFilters = {
+        searchParam: "repo",
+        onlySources: true,
+        onlyArchived: true,
+      };
+      const result = filterAndSortRepos(mockRepos, filters);
+      expect(result).toEqual([mockRepos[3]]);
+    });
+
+    it("should apply sorting after filters", () => {
+      const result = filterAndSortRepos(mockRepos, { sortAnchor: "stars" });
+      expect(result[0].stargazers_count).toBe(200);
+    });
+
+    it("should handle conflicting filters", () => {
+      const result = filterAndSortRepos(mockRepos, {
+        onlyForks: true,
+        onlyMirrors: true,
+      });
+      expect(result).toEqual([]);
     });
   });
 });

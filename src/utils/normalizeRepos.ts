@@ -12,17 +12,21 @@ export const normalizeRepos = (rawData: IRawRepository[]): IRepository[] => {
         : "Unknown",
     stargazers_count:
       typeof repo?.stargazers_count === "number" ? repo?.stargazers_count : 0,
-    updated_at: parseDate(repo?.updated_at),
-    created_at: parseDate(repo?.created_at),
-    pushed_at: parseDate(repo?.pushed_at),
+    updatedAt: parseDate(repo?.updated_at),
+    createdAt: parseDate(repo?.created_at),
+    pushedAt: parseDate(repo?.pushed_at),
     owner: {
       login: repo.owner?.login || "Unknown",
-      avatar_url: repo.owner?.avatar_url || "",
-      html_url: isValidUrl(repo?.owner?.html_url)
+      avatarUrl: repo.owner?.avatar_url || "",
+      htmlUrl: isValidUrl(repo?.owner?.html_url)
         ? repo.owner?.html_url || ""
         : "",
     },
-    watchers_count:
+    mirrorUrl:
+      repo?.mirror_url && isValidUrl(repo?.mirror_url)
+        ? repo?.mirror_url
+        : undefined,
+    watchersCount:
       typeof repo?.watchers_count === "number" ? repo?.watchers_count : 0,
     fork: repo?.fork ?? false,
     archived: repo?.archived ?? false,

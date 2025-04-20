@@ -1,13 +1,73 @@
-import { IRepository } from "@/types";
+import { IRepository, RepoFilters } from "@/types";
 
-export function filterByLanguage(
+export function filterAndSortRepos(
   repos: IRepository[],
-  language: string
+  filters: RepoFilters
 ): IRepository[] {
-  if (language === "All") {
-    return repos;
+  let filtered = [...repos];
+
+  if (filters.searchParam) {
+    filtered = filterByName(filtered, filters.searchParam);
   }
-  return repos.filter((repo) => repo.language === language);
+
+  if (filters.onlyForks) {
+    filtered = filterByFork(filtered, true);
+  }
+
+  if (filters.onlyMirrors) {
+    filtered = filterByMirror(filtered, true);
+  }
+
+  if (filters.onlySources) {
+    filtered = filterBySource(filtered, true);
+  }
+
+  if (filters.onlyArchived) {
+    filtered = filterByArchived(filtered, true);
+  }
+
+  if (filters.sortAnchor) {
+    filtered = sortRepos(filtered, filters.sortAnchor);
+  }
+
+  return filtered;
+}
+
+export function filterByFork(
+  repos: IRepository[],
+  onlyForks: boolean
+): IRepository[] {
+  if (!onlyForks) return repos;
+  return repos.filter((repo) => repo.fork);
+}
+
+export function filterByMirror(
+  repos: IRepository[],
+  onlyMirrors: boolean
+): IRepository[] {
+  if (!onlyMirrors) return repos;
+  return repos.filter(
+    (repo) =>
+      repo.fork === false &&
+      repo.mirrorUrl !== undefined &&
+      repo.mirrorUrl !== null
+  );
+}
+
+export function filterBySource(
+  repos: IRepository[],
+  onlySources: boolean
+): IRepository[] {
+  if (!onlySources) return repos;
+  return repos.filter((repo) => !repo.fork && !repo.mirrorUrl);
+}
+
+export function filterByArchived(
+  repos: IRepository[],
+  onlyArchived: boolean
+): IRepository[] {
+  if (!onlyArchived) return repos;
+  return repos.filter((repo) => repo.archived);
 }
 
 export function filterByName(
@@ -30,8 +90,8 @@ export function sortRepos(
   if (anchor === "updated") {
     return sortedRepos.sort(
       (a, b) =>
-        new Date(b.updated_at ?? 0).getTime() -
-        new Date(a.updated_at ?? 0).getTime()
+        new Date(b.updatedAt ?? 0).getTime() -
+        new Date(a.updatedAt ?? 0).getTime()
     );
   }
   return sortedRepos;

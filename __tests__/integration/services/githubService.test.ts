@@ -30,8 +30,8 @@ describe("Github Service - searchRepos", () => {
     expect(repo).toHaveProperty("stargazers_count");
     expect(typeof repo.stargazers_count).toBe("number");
 
-    expect(repo).toHaveProperty("updated_at");
-    expect(repo.updated_at === null || repo.updated_at instanceof Date).toBe(
+    expect(repo).toHaveProperty("updatedAt");
+    expect(repo.updatedAt === null || repo.updatedAt instanceof Date).toBe(
       true
     );
 
@@ -39,17 +39,16 @@ describe("Github Service - searchRepos", () => {
     expect(repo.owner).toHaveProperty("login");
     expect(typeof repo.owner.login).toBe("string");
 
-    expect(repo.owner).toHaveProperty("avatar_url");
-    expect(typeof repo.owner.avatar_url).toBe("string");
+    expect(repo.owner).toHaveProperty("avatarUrl");
+    expect(typeof repo.owner.avatarUrl).toBe("string");
 
-    expect(repo.owner).toHaveProperty("html_url");
+    expect(repo.owner).toHaveProperty("htmlUrl");
     expect(
-      repo.owner.html_url === undefined ||
-        typeof repo.owner.html_url === "string"
+      repo.owner.htmlUrl === undefined || typeof repo.owner.htmlUrl === "string"
     ).toBe(true);
 
-    expect(repo).toHaveProperty("watchers_count");
-    expect(typeof repo.watchers_count).toBe("number");
+    expect(repo).toHaveProperty("watchersCount");
+    expect(typeof repo.watchersCount).toBe("number");
 
     expect(repo).toHaveProperty("fork");
     expect(typeof repo.fork).toBe("boolean");
@@ -57,12 +56,12 @@ describe("Github Service - searchRepos", () => {
     expect(repo).toHaveProperty("archived");
     expect(typeof repo.archived).toBe("boolean");
 
-    if (repo.pushed_at) {
-      expect(repo.pushed_at instanceof Date).toBe(true);
+    if (repo.pushedAt) {
+      expect(repo.pushedAt instanceof Date).toBe(true);
     }
 
-    if (repo.created_at) {
-      expect(repo.created_at instanceof Date).toBe(true);
+    if (repo.createdAt) {
+      expect(repo.createdAt instanceof Date).toBe(true);
     }
   });
 });

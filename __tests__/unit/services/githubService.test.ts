@@ -1,5 +1,6 @@
 import {
   axiosInstance as mockedAxiosInstance,
+  mockRawRepos,
   mockRawUserProfile,
 } from "@/tests/mocks";
 jest.mock("@/services/axiosGithubInstance", () => mockedAxiosInstance);
@@ -15,7 +16,7 @@ describe("Github Service - searchRepos", () => {
   it("should fetch repositories successfully", async () => {
     (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
       data: {
-        items: mockRepos,
+        items: mockRawRepos,
       },
     });
 
@@ -149,7 +150,7 @@ describe("Github Service - getUserStarredRepos", () => {
 
   it("should fetch starred repositories successfully", async () => {
     (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
-      data: mockRepos,
+      data: mockRawRepos,
     });
 
     const username = "octocat";
@@ -195,7 +196,7 @@ describe("Github Service - getUserRepos", () => {
 
   it("should fetch user repositories successfully", async () => {
     (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
-      data: mockRepos,
+      data: mockRawRepos,
     });
 
     const username = "octocat";

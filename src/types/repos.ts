@@ -11,15 +11,16 @@ export interface IRepository {
   description: string | null;
   language: string;
   stargazers_count: number;
-  updated_at: Date | null;
+  updatedAt: Date | null;
   owner: {
     login: string;
-    avatar_url: string;
-    html_url: string | undefined;
+    avatarUrl: string;
+    htmlUrl: string | undefined;
   };
-  watchers_count: number;
+  watchersCount: number;
   fork: boolean;
   archived: boolean;
-  pushed_at?: Date | null;
-  created_at?: Date | null;
+  mirrorUrl?: string | null;
+  pushedAt?: Date | null;
+  createdAt?: Date | null;
 }
