@@ -4,21 +4,13 @@ import {
   IGithubSearchUserDTO,
   IGithubUserProfile,
   IProfile,
+  IQueryOptions,
   IRawRepository,
+  IRepoQueryOptions,
   IRepository,
 } from "@/types";
 import axiosInstance from "./axiosGithubInstance";
 import { normalizeProfiles } from "@/utils/normalizeProfiles";
-
-interface IQueryOptions {
-  page?: number;
-  perPage?: number;
-  language?: string;
-}
-
-interface IRepoQueryOptions extends IQueryOptions {
-  type?: "all" | "owner" | "member";
-}
 
 export const githubService = {
   async searchRepos(
