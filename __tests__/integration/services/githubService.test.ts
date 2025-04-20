@@ -1,5 +1,7 @@
 import { githubService } from "@/services/githubService";
 
+jest.setTimeout(30000);
+
 describe("Github Service - searchRepos", () => {
   it("should fetch repositories successfully", async () => {
     const repos = await githubService.searchRepos("react");

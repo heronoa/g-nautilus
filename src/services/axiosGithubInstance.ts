@@ -2,10 +2,10 @@ import { C } from "@/utils";
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: C.GITHUB_API_URL,
+  baseURL: C.githubApiUrl,
   headers: {
     "Content-Type": "application/json",
-    ...(C.GITHUB_API_TOKEN && { Authorization: `token ${C.GITHUB_API_TOKEN}` }),
+    ...(C.githubApiToken && { Authorization: `token ${C.githubApiToken}` }),
   },
 });
 
