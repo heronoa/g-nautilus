@@ -1,15 +1,5 @@
 import { IRepository } from "@/types";
 
-export function filterByLanguage(
-  repos: IRepository[],
-  language: string
-): IRepository[] {
-  if (language === "All") {
-    return repos;
-  }
-  return repos.filter((repo) => repo.language === language);
-}
-
 export function filterByName(
   repos: IRepository[],
   searchParam: string
@@ -30,8 +20,8 @@ export function sortRepos(
   if (anchor === "updated") {
     return sortedRepos.sort(
       (a, b) =>
-        new Date(b.updated_at ?? 0).getTime() -
-        new Date(a.updated_at ?? 0).getTime()
+        new Date(b.updatedAt ?? 0).getTime() -
+        new Date(a.updatedAt ?? 0).getTime()
     );
   }
   return sortedRepos;

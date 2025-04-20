@@ -58,6 +58,7 @@ export interface IGithubRepository {
   open_issues: number;
   watchers: number;
   score: number;
+  mirror_url?: string | null;
 }
 
 export interface IGithubUserProfile {

@@ -1,20 +1,7 @@
-import { filterByLanguage, filterByName, sortRepos } from "@/utils/filterRepos";
+import { filterByName, sortRepos } from "@/utils/filterRepos";
 import { mockRepos } from "@/tests/mocks";
 
 describe("Repository filtering and sorting functions", () => {
-  describe("filterByLanguage", () => {
-    it("should return only repositories of the selected language", () => {
-      const result = filterByLanguage(mockRepos, "JavaScript");
-      expect(result).toHaveLength(1);
-      expect(result[0].language).toBe("JavaScript");
-    });
-
-    it('should return all repositories when language is "All"', () => {
-      const result = filterByLanguage(mockRepos, "All");
-      expect(result).toHaveLength(mockRepos.length);
-    });
-  });
-
   describe("filterByName", () => {
     it("should return repositories that contain the search term in the name", () => {
       const result = filterByName(mockRepos, "repo-1");
@@ -44,8 +31,8 @@ describe("Repository filtering and sorting functions", () => {
 
     it("should sort repositories by updated date in descending order", () => {
       const result = sortRepos(mockRepos, "updated");
-      expect(result[0].updated_at?.getTime() ?? 0).toBeGreaterThanOrEqual(
-        result[1].updated_at?.getTime() ?? 0
+      expect(result[0].updatedAt?.getTime() ?? 0).toBeGreaterThanOrEqual(
+        result[1].updatedAt?.getTime() ?? 0
       );
     });
 
