@@ -5,10 +5,12 @@ interface UseSearchOptions {
   query: string;
   page?: number;
   perPage?: number;
+  user?: string;
 }
 
 export function useReposSearch({
   query,
+  user,
   page = 1,
   perPage = 30,
 }: UseSearchOptions): UseQueryResult<IRepository[], Error> {
@@ -16,7 +18,7 @@ export function useReposSearch({
 
   return useQuery({
     queryKey: queryKey,
-    queryFn: () => githubService.searchRepos(query, { page, perPage }),
+    queryFn: () => githubService.searchRepos(query, { page, perPage, user }),
     enabled: !!query,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
