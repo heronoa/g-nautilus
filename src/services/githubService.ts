@@ -10,18 +10,28 @@ import {
 import axiosInstance from "./axiosGithubInstance";
 import { normalizeProfiles } from "@/utils/normalizeProfiles";
 
-interface queryOptions {
+interface IQueryOptions {
   page?: number;
   perPage?: number;
+  language?: string;
+}
+
+interface IRepoQueryOptions extends IQueryOptions {
+  type?: "all" | "owner" | "member";
 }
 
 export const githubService = {
   async searchRepos(
     query: string,
-    options?: queryOptions
+    options?: IQueryOptions
   ): Promise<IRepository[]> {
     try {
-      const url = `/search/repositories?q=${query}${options ? `&page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const params = new URLSearchParams({
+        ...(query ? { q: query } : {}),
+        page: options?.page?.toString() || "1",
+        per_page: options?.perPage?.toString() || "30",
+      });
+      const url = `/search/repositories${params.toString() ? `?${params.toString()}` : ""}`;
 
       const response = await axiosInstance.get(url);
 
@@ -34,10 +44,15 @@ export const githubService = {
 
   async searchUsers(
     query: string,
-    options?: queryOptions
+    options?: IQueryOptions
   ): Promise<IProfile[]> {
     try {
-      const url = `/search/users?q=${query}${options ? `&page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const params = new URLSearchParams({
+        ...(query && { q: query }),
+        page: options?.page?.toString() || "1",
+        per_page: options?.perPage?.toString() || "30",
+      });
+      const url = `/search/users${params.toString() ? `?${params.toString()}` : ""}`;
       const response = await axiosInstance.get(url);
       const rawData: IGithubSearchUserDTO = await response.data;
       const users: IProfile[] = normalizeProfiles(rawData.items);
@@ -49,10 +64,15 @@ export const githubService = {
 
   async getUserProfile(
     username: string,
-    options?: queryOptions
+    options?: IQueryOptions
   ): Promise<IProfile> {
     try {
-      const url = `/users/${username}${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const params = new URLSearchParams({
+        page: options?.page?.toString() || "1",
+        per_page: options?.perPage?.toString() || "30",
+      });
+
+      const url = `/users/${username}${params.toString() ? `?${params.toString()}` : ""}`;
       const response = await axiosInstance.get(url);
 
       const userProfile: IGithubUserProfile = await response.data;
@@ -67,10 +87,19 @@ export const githubService = {
 
   async getUserStarredRepos(
     username: string,
-    options?: queryOptions
+    options?: IRepoQueryOptions
   ): Promise<IRepository[]> {
     try {
-      const url = `/users/${username}/starred${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const params = new URLSearchParams({
+        ...(options?.language && {
+          q: `language:${options?.language}`,
+        }),
+        page: options?.page?.toString() || "1",
+        per_page: options?.perPage?.toString() || "30",
+        type: options?.type || "all",
+      });
+
+      const url = `/users/${username}/starred${params.toString() ? `?${params.toString()}` : ""}`;
       const response = await axiosInstance.get(url);
       const starredRepos: IRawRepository[] = await response.data;
       const normalizedStarredRepos: IRepository[] =
@@ -84,10 +113,19 @@ export const githubService = {
 
   async getUserRepos(
     username: string,
-    options?: queryOptions
+    options?: IRepoQueryOptions
   ): Promise<IRepository[]> {
     try {
-      const url = `/users/${username}/repos${options ? `?page=${options?.page}&per_page=${options?.perPage}` : ""}`;
+      const params = new URLSearchParams({
+        ...(options?.language && {
+          q: `language:${options?.language}`,
+        }),
+        page: options?.page?.toString() || "1",
+        per_page: options?.perPage?.toString() || "30",
+        type: options?.type || "all",
+      });
+
+      const url = `/users/${username}/repos${params.toString() ? `?${params.toString()}` : ""}`;
       const response = await axiosInstance.get(url);
       const repos: IRawRepository[] = await response.data;
       const normalizedRepos: IRepository[] = normalizeRepos(repos);

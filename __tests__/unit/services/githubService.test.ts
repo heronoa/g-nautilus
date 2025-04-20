@@ -24,7 +24,7 @@ describe("Github Service - searchRepos", () => {
     expect(repos).toEqual(mockRepos);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      "/search/repositories?q=react"
+      "/search/repositories?q=react&page=1&per_page=30"
     );
   });
 
@@ -69,7 +69,7 @@ describe("Github Service - searchUsers", () => {
     expect(users).toEqual([mockUserProfile]);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      "/search/users?q=octocat"
+      "/search/users?q=octocat&page=1&per_page=30"
     );
   });
 
@@ -113,7 +113,7 @@ describe("Github Service - getUserProfile", () => {
 
     expect(profile).toEqual(mockUserProfile);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
-    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(`/users/${username}`);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(`/users/${username}?page=1&per_page=30`);
   });
 
   it("should handle fetch error", async () => {
@@ -158,7 +158,7 @@ describe("Github Service - getUserStarredRepos", () => {
     expect(repos).toEqual(mockRepos);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `/users/${username}/starred`
+      `/users/${username}/starred?page=1&per_page=30&type=all`
     );
   });
 
@@ -183,7 +183,7 @@ describe("Github Service - getUserStarredRepos", () => {
     await githubService.getUserStarredRepos(username, options);
 
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `/users/${username}/starred?page=${options.page}&per_page=${options.perPage}`
+      `/users/${username}/starred?page=${options.page}&per_page=${options.perPage}&type=all`
     );
   });
 });
@@ -204,7 +204,7 @@ describe("Github Service - getUserRepos", () => {
     expect(repos).toEqual(mockRepos);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `/users/${username}/repos`
+      `/users/${username}/repos?page=1&per_page=30&type=all`
     );
   });
 
@@ -229,7 +229,7 @@ describe("Github Service - getUserRepos", () => {
     await githubService.getUserRepos(username, options);
 
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `/users/${username}/repos?page=${options.page}&per_page=${options.perPage}`
+      `/users/${username}/repos?page=${options.page}&per_page=${options.perPage}&type=all`
     );
   });
 });
