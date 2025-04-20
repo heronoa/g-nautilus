@@ -1,0 +1,10 @@
+export { default as Bookmark } from "./Bookmark";
+export { default as BranchRegular } from "./BranchRegular";
+export { default as Chain } from "./Chain";
+export { default as ChevronDown2 } from "./ChevronDown2";
+export { default as ChevronDown3 } from "./ChevronDown3";
+export { default as Enterprise } from "./Enterprise";
+export { default as IconsStar } from "./IconsStar";
+export { default as InstagramFill } from "./InstagramFill";
+export { default as Location } from "./Location";
+export { default as StarFilled } from "./StarFilled";
