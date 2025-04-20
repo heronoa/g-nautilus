@@ -41,7 +41,7 @@ export const mockUserProfile: IProfile = {
   bio: "This is a mocked user profile for testing purposes.",
   blog: "https://mockuser.dev",
   company: "Mock Company",
-  createdAt: new Date("2020-01-01T00:00:00.000Z"), // Certifique-se de que as datas estão corretas
+  createdAt: new Date("2020-01-01T00:00:00.000Z"),
   email: "mockuser@example.com",
   eventsUrl: "https://api.github.com/users/mockuser/events{/privacy}",
   followers: 100,

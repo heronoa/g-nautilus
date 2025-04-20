@@ -42,8 +42,8 @@ export const githubService = {
       const rawData: IGithubSearchUserDTO = await response.data;
       const users: IProfile[] = normalizeProfiles(rawData.items);
       return users;
-    } catch (error) {
-      throw new Error(`GitHub API error: ${error}`);
+    } catch (error: unknown) {
+      throw error;
     }
   },
 
@@ -61,7 +61,7 @@ export const githubService = {
 
       return normalizeProfile;
     } catch (error) {
-      throw new Error(`GitHub API error: ${error}`);
+      throw error;
     }
   },
 
@@ -78,7 +78,7 @@ export const githubService = {
 
       return normalizedStarredRepos;
     } catch (error) {
-      throw new Error(`GitHub API error: ${error}`);
+      throw error;
     }
   },
 
@@ -93,7 +93,7 @@ export const githubService = {
       const normalizedRepos: IRepository[] = normalizeRepos(repos);
       return normalizedRepos;
     } catch (error) {
-      throw new Error(`GitHub API error: ${error}`);
+      throw error;
     }
   },
 };
