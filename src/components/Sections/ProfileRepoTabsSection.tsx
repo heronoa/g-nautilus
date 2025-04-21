@@ -17,23 +17,41 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
   return (
     <section className="w-full max-w-3xl">
       <Tabs defaultValue="repositories" className="w-full flex flex-col">
-        <TabsList className="flex gap-4 p-2 bg-gray-100 dark:bg-zinc-800 rounded-md">
-          <TabsTrigger
-            className="flex-1 flex justify-center items-center cursor-pointer"
-            value="repositories"
-          >
-            <div className="flex items-center gap-2">
-              <Bookmark /> Repositórios {repos.totalCount}
-            </div>
-          </TabsTrigger>
-          <TabsTrigger
-            className="flex-1 flex justify-center items-center cursor-pointer"
-            value="starred"
-          >
-            <div className="flex items-center gap-2">
-              <IconsStar /> Starred {starredRepos.totalCount}
-            </div>
-          </TabsTrigger>
+        <TabsList className="flex gap-4 p-2  dark:bg-zinc-800 rounded-md">
+          {[
+            {
+              value: "repositories",
+              icon: <Bookmark />,
+              label: "Repositórios",
+              count: repos.totalCount,
+            },
+            {
+              value: "starred",
+              icon: <IconsStar />,
+              label: "Starred",
+              count: starredRepos.totalCount,
+            },
+          ].map((tab) => (
+            <TabsTrigger
+              key={tab.value}
+              className="flex-1 flex justify-center items-center cursor-pointer  relative group"
+              value={tab.value}
+            >
+              <div className="flex items-center gap-2">
+                {tab.icon} {tab.label}
+                <span className="w-10 h-6 rounded-full border solid border-gray-200">
+                  {tab.count}
+                </span>
+              </div>
+              {tab.value === "repositories" && (
+                <div
+                  className={
+                    "absolute w-full h-1 bg-[#FD8C73] group-data-[state=inactive]:left-[calc(100%_+_16px)] left-0 -bottom-4 right-0 transition-all duration-200"
+                  }
+                ></div>
+              )}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         <TabsContent value="repositories">
