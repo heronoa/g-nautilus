@@ -23,4 +23,5 @@ export interface IRepository {
   mirrorUrl?: string | null;
   pushedAt?: Date | null;
   createdAt?: Date | null;
+  forkCount?: number;
 }
