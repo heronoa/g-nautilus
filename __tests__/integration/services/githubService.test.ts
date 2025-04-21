@@ -66,26 +66,6 @@ describe("Github Service - searchRepos", () => {
   });
 });
 
-describe("Github Service - getUserStarredRepos", () => {
-  it("should fetch starred repositories successfully", async () => {
-    const username = "octocat";
-    const repos = await githubService.getUserStarredRepos(username);
-
-    expect(repos).toBeDefined();
-    expect(Array.isArray(repos)).toBe(true);
-  });
-});
-
-describe("Github Service - getUserRepos", () => {
-  it("should fetch user repositories successfully", async () => {
-    const username = "octocat";
-    const repos = await githubService.getUserRepos(username);
-
-    expect(repos).toBeDefined();
-    expect(Array.isArray(repos)).toBe(true);
-  });
-});
-
 describe("Github Service - searchUsers", () => {
   it("should fetch users successfully", async () => {
     const users = await githubService.searchUsers("octocat");

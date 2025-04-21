@@ -66,7 +66,7 @@ export const githubService = {
 
       const response = await fetchWithCache(url);
 
-      const userProfile: IGithubUserProfile = await response.json();
+      const userProfile = (await response.data) as IGithubUserProfile;
 
       const normalizeProfile: IProfile = normalizeProfiles([userProfile])[0];
 
@@ -92,8 +92,8 @@ export const githubService = {
       });
 
       const url = `/users/${username}/starred${params.toString() ? `?${params.toString()}` : ""}`;
-      const response = await axiosInstance.get(url);
-      const starredRepos: IRawRepository[] = await response.data;
+      const response = await fetchWithCache<IRawRepository[]>(url);
+      const starredRepos = response.data;
       const normalizedStarredRepos: IRepository[] =
         normalizeRepos(starredRepos);
 
@@ -106,8 +106,8 @@ export const githubService = {
   async getRepo(username: string) {
     try {
       const url = `/repos/${username}`;
-      const response = await axiosInstance.get(url);
-      const repo: IRawRepository = await response.data;
+      const response = await fetchWithCache<IRawRepository>(url);
+      const repo = response.data;
       const normalizedRepo: IRepository = normalizeRepos([repo])[0];
       return normalizedRepo;
     } catch (error) {
@@ -130,8 +130,8 @@ export const githubService = {
       });
 
       const url = `/users/${username}/repos${params.toString() ? `?${params.toString()}` : ""}`;
-      const response = await axiosInstance.get(url);
-      const repos: IRawRepository[] = await response.data;
+      const response = await fetchWithCache<IRawRepository[]>(url);
+      const repos: IRawRepository[] = response.data;
       const normalizedRepos: IRepository[] = normalizeRepos(repos);
       return normalizedRepos;
     } catch (error) {
