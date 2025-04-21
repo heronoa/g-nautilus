@@ -7,31 +7,34 @@ import { useProfileSearch } from "@/hooks/useProfileSearch";
 import { Loading } from "../icons";
 import { IProfile } from "@/types";
 import ProfileCard from "./ProfileCard";
+import { useSearchStore } from "@/store/SearchState";
 
 const SearchForm: React.FC = () => {
-  const [search, setSearch] = useState<string>("");
-  const [submittedQuery, setSubmittedQuery] = useState<string>("");
+  const { searchInput, page, perPage, query, setSearchInput, submitQuery } =
+    useSearchStore();
+
   const [profiles, setProfiles] = useState<IProfile[]>([]);
-  const [page, setPage] = useState<number>(1);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
 
   const { data, isLoading, error, isFetching } = useProfileSearch({
-    query: submittedQuery,
+    query,
     page,
+    perPage,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setProfiles([]);
-    setPage(1);
-    setSubmittedQuery(search);
+    submitQuery();
     setHasSearched(false);
   };
 
   const handleLoadMore = () => {
     if (!isFetching) {
-      setPage((prev) => prev + 1);
+      useSearchStore.setState((state) => ({
+        page: state.page + 1,
+      }));
     }
   };
 
@@ -61,8 +64,8 @@ const SearchForm: React.FC = () => {
         <Input
           type="text"
           placeholder="Digite o nome do usuário"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
         <div className="relative w-full">
           {fetchLoading && (
