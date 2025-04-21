@@ -48,16 +48,15 @@ describe("useProfile", () => {
 
   it("should call githubService.getUserProfile with the correct arguments", async () => {
     const username = "testuser";
-    const options = { page: 1, perPage: 10 };
 
     mockUseQuery.mockImplementation(({ queryFn }) => {
       queryFn();
       return {};
     });
 
-    renderHook(() => useProfile(username, options));
+    renderHook(() => useProfile(username));
 
-    expect(mockGetUserProfile).toHaveBeenCalledWith(username, options);
+    expect(mockGetUserProfile).toHaveBeenCalledWith(username);
   });
 
   it("should handle errors from githubService.getUserProfile", async () => {
