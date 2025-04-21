@@ -19,7 +19,5 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     perPage: 30,
   });
 
-  return (
-    <ProfileFrame profile={profile} repos={repos} starredRepos={starredRepos} />
-  );
+  return <ProfileFrame profile={profile} repos={repos} starredRepos={starredRepos} />;
 }

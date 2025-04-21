@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "generate:icons": "svgr --typescript ./src/assets/icons --out-dir ./src/components/icons",
+    
     "test": "jest",
+    "test:unit": "jest __tests__/unit",
     "test:watch": "jest --watch",
     "build": "next build",
     "start": "next start",
