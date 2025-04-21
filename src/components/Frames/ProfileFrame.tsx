@@ -1,4 +1,4 @@
-import { IProfile, IRepository } from "@/types";
+import { IPaginationReturn, IProfile, IRepository } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
 import Image from "next/image";
 import RepositoryCard from "../Repository/RepositoryCard";
@@ -7,8 +7,8 @@ import { IconsStar } from "../icons";
 
 interface ProfileFrameProps {
   profile: IProfile;
-  repos: IRepository[];
-  starredRepos: IRepository[];
+  repos: IPaginationReturn<IRepository>;
+  starredRepos: IPaginationReturn<IRepository>;
 }
 const ProfileFrame: React.FC<ProfileFrameProps> = ({
   profile,
@@ -35,26 +35,26 @@ const ProfileFrame: React.FC<ProfileFrameProps> = ({
         <Tabs defaultValue="repositories" className="w-full flex flex-col">
           <TabsList className="flex gap-4 p-2 bg-gray-100 dark:bg-zinc-800 rounded-md">
             <TabsTrigger
-              className="flex-1 flex justify-center items-center"
+              className="flex-1 flex justify-center items-center cursor-pointer"
               value="repositories"
             >
               <div className="flex items-center gap-2">
-                <SvgBookmark /> Repositórios {repos.length}
+                <SvgBookmark /> Repositórios {repos.totalCount}
               </div>
             </TabsTrigger>
             <TabsTrigger
-              className="flex-1 flex justify-center items-center"
+              className="flex-1 flex justify-center items-center cursor-pointer"
               value="starred"
             >
               <div className="flex items-center gap-2">
-                <IconsStar /> Favoritos {starredRepos.length}
+                <IconsStar /> Favoritos {starredRepos.totalCount}
               </div>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="repositories">
             <div className="grid gap-4 mt-4">
-              {repos.map((repo: IRepository) => (
+              {repos.items.map((repo: IRepository) => (
                 <RepositoryCard key={repo.id} repository={repo} />
               ))}
             </div>
@@ -62,7 +62,7 @@ const ProfileFrame: React.FC<ProfileFrameProps> = ({
 
           <TabsContent value="starred">
             <div className="grid gap-4 mt-4">
-              {starredRepos.map((repo: IRepository) => (
+              {starredRepos.items.map((repo: IRepository) => (
                 <RepositoryCard key={repo.id} repository={repo} />
               ))}
             </div>

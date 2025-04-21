@@ -15,6 +15,7 @@ global.fetch = jest.fn(() =>
 import { githubService } from "@/services/githubService";
 import { mockRepos, mockUserProfile } from "@/tests/mocks";
 import { C } from "@/utils";
+import { IRepository } from "@/types";
 
 describe("Github Service - searchRepos", () => {
   beforeEach(() => {
@@ -310,45 +311,133 @@ describe("Github Service - getUserRepos", () => {
 });
 
 describe("Github Service - getRepo", () => {
-  describe("Github Service - getRepo", () => {
-    beforeEach(() => {
-      (fetch as jest.Mock).mockClear();
+  beforeEach(() => {
+    (fetch as jest.Mock).mockClear();
+  });
+
+  it("should fetch a repository successfully", async () => {
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      json: async () => mockRawRepos[0],
     });
 
-    it("should fetch a repository successfully", async () => {
-      (fetch as jest.Mock).mockResolvedValueOnce({
-        json: async () => mockRawRepos[0],
-      });
+    const username = "octocat/repo";
+    const repo = await githubService.getRepo(username);
 
-      const username = "octocat/repo";
-      const repo = await githubService.getRepo(username);
+    expect(repo).toEqual(mockRepos[0]);
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(`${C.githubApiUrl}/repos/${username}`, {
+      cache: "force-cache",
+      headers: {
+        Authorization: `Bearer ${C.githubApiToken}`,
+        "Content-Type": "application/json",
+        "User-Agent": "g-nautilus",
+      },
+      next: { revalidate: 60 },
+      redirect: "follow",
+    });
+  });
 
-      expect(repo).toEqual(mockRepos[0]);
-      expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(
-        `${C.githubApiUrl}/repos/${username}`,
-        {
-          cache: "force-cache",
-          headers: {
-            Authorization: `Bearer ${C.githubApiToken}`,
-            "Content-Type": "application/json",
-            "User-Agent": "g-nautilus",
-          },
-          next: { revalidate: 60 },
-          redirect: "follow",
+  it("should handle fetch error", async () => {
+    (fetch as jest.Mock).mockRejectedValueOnce(
+      new Error("GitHub API error: 500")
+    );
+
+    await expect(githubService.getRepo("octocat/repo")).rejects.toThrow(
+      "GitHub API error: 500"
+    );
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("Github Service - getAllUserRepos", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(githubService, "getUserRepos")
+      .mockImplementation(async (_username: string, options) => {
+        const perPage = options?.perPage || 30;
+        const page = options?.page || 1;
+
+        if (page === 1) {
+          return Array.from({ length: perPage }, (_, i) => ({
+            id: i + 1,
+            name: `Repo${i + 1}`,
+          })) as IRepository[];
+        } else if (page === 2) {
+          return Array.from({ length: 10 }, (_, i) => ({
+            id: i + 31,
+            name: `Repo${i + 31}`,
+          })) as IRepository[];
+        } else {
+          return [];
         }
-      );
+      });
+  });
+
+  it("deve buscar todos os repositórios paginados de um usuário", async () => {
+    const allRepos = await githubService.getAllUserRepos("usuarioTeste");
+
+    expect(githubService.getUserRepos).toHaveBeenCalledTimes(2);
+    expect(githubService.getUserRepos).toHaveBeenCalledWith("usuarioTeste", {
+      perPage: 30,
+      page: 1,
+    });
+    expect(githubService.getUserRepos).toHaveBeenCalledWith("usuarioTeste", {
+      perPage: 30,
+      page: 2,
     });
 
-    it("should handle fetch error", async () => {
-      (fetch as jest.Mock).mockRejectedValueOnce(
-        new Error("GitHub API error: 500")
-      );
+    expect(allRepos.items).toHaveLength(40);
+    expect(allRepos.totalCount).toBe(40);
+    expect(allRepos.items[0].name).toBe("Repo1");
+    expect(allRepos.items[39].name).toBe("Repo40");
+  });
+});
+describe("Github Service - getAllUserStarredRepos", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(githubService, "getUserStarredRepos")
+      .mockImplementation(async (_username: string, options) => {
+        const perPage = options?.perPage || 30;
+        const page = options?.page || 1;
 
-      await expect(githubService.getRepo("octocat/repo")).rejects.toThrow(
-        "GitHub API error: 500"
-      );
-      expect(fetch).toHaveBeenCalledTimes(1);
-    });
+        if (page === 1) {
+          return Array.from({ length: perPage }, (_, i) => ({
+            id: i + 1,
+            name: `Repo${i + 1}`,
+          })) as IRepository[];
+        } else if (page === 2) {
+          return Array.from({ length: 10 }, (_, i) => ({
+            id: i + 31,
+            name: `Repo${i + 31}`,
+          })) as IRepository[];
+        } else {
+          return [];
+        }
+      });
+  });
+
+  it("deve buscar todos os repositórios paginados de um usuário", async () => {
+    const allStarredRepos = await githubService.getAllUserStarredRepos("usuarioTeste");
+
+    expect(githubService.getUserStarredRepos).toHaveBeenCalledTimes(2);
+    expect(githubService.getUserStarredRepos).toHaveBeenCalledWith(
+      "usuarioTeste",
+      {
+        perPage: 30,
+        page: 1,
+      }
+    );
+    expect(githubService.getUserStarredRepos).toHaveBeenCalledWith(
+      "usuarioTeste",
+      {
+        perPage: 30,
+        page: 2,
+      }
+    );
+
+    expect(allStarredRepos.items).toHaveLength(40);
+    expect(allStarredRepos.totalCount).toBe(40);
+    expect(allStarredRepos.items[0].name).toBe("Repo1");
+    expect(allStarredRepos.items[39].name).toBe("Repo40");
   });
 });

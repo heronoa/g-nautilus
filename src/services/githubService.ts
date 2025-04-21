@@ -138,4 +138,64 @@ export const githubService = {
       throw error;
     }
   },
+
+  async getAllUserRepos(
+    username: string
+  ): Promise<IPaginationReturn<IRepository>> {
+    const allRepos: IRepository[] = [];
+    let page = 1;
+    const perPage = 30;
+
+    while (true) {
+      const paginatedRepos = await this.getUserRepos(username, {
+        page,
+        perPage,
+      });
+
+      allRepos.push(...paginatedRepos);
+
+      if (paginatedRepos.length < perPage) break;
+
+      page++;
+    }
+
+    const paginatedReturn = allRepos.reduce(
+      (acc: IPaginationReturn<IRepository>, repo: IRepository) => {
+        acc.items.push(repo);
+        acc.totalCount += 1;
+        return acc;
+      },
+      { items: [], totalCount: 0 }
+    );
+
+    return paginatedReturn;
+  },
+
+  async getAllUserStarredRepos(
+    username: string
+  ): Promise<IPaginationReturn<IRepository>> {
+    const allStarredRepos: IRepository[] = [];
+    let page = 1;
+    const perPage = 30;
+    while (true) {
+      const paginatedStarredRepos = await this.getUserStarredRepos(username, {
+        page,
+        perPage,
+      });
+      allStarredRepos.push(...paginatedStarredRepos);
+      if (paginatedStarredRepos.length < perPage) break;
+      page++;
+    }
+
+    const paginatedReturn = allStarredRepos.reduce(
+      (acc: IPaginationReturn<IRepository>, repo: IRepository) => {
+        acc.items.push(repo);
+        acc.totalCount += 1;
+        return acc;
+      },
+      { items: [], totalCount: 0 }
+    );
+
+    return paginatedReturn;
+  },
 };
