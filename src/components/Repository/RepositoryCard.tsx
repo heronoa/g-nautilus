@@ -5,7 +5,7 @@ interface RepositoryCardProps {
   repository: IRepository;
 }
 
-export default function RepositoryCard({ repository }: RepositoryCardProps) {
+export const RepositoryCard = ({ repository }: RepositoryCardProps) => {
   return (
     <div className="p-4 rounded-md  bg-white">
       <h3 className="text-lg font-medium ">
@@ -24,4 +24,4 @@ export default function RepositoryCard({ repository }: RepositoryCardProps) {
       </div>
     </div>
   );
-}
+};

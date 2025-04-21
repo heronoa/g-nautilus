@@ -1,9 +1,8 @@
 import { IPaginationReturn, IProfile, IRepository } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
 import Image from "next/image";
-import RepositoryCard from "../Repository/RepositoryCard";
-import SvgBookmark from "../icons/Bookmark";
-import { IconsStar } from "../icons";
+import { IconsStar, Bookmark, RepositoryCard } from "@/components";
+import Link from "next/link";
 
 interface ProfileFrameProps {
   profile: IProfile;
@@ -17,7 +16,7 @@ export const ProfileFrame: React.FC<ProfileFrameProps> = ({
 }: ProfileFrameProps) => {
   return (
     <div className="flex flex-col justify-center items-center mx-auto px-4 py-8">
-      <section className="flex flex-col md:flex-row items-center md:items-start mb-8">
+      <section className="flex flex-col md:flex-row items-center md:items-start mb-8 w-full max-w-3xl">
         <Image
           width={128}
           height={128}
@@ -39,7 +38,7 @@ export const ProfileFrame: React.FC<ProfileFrameProps> = ({
               value="repositories"
             >
               <div className="flex items-center gap-2">
-                <SvgBookmark /> Repositórios {repos.totalCount}
+                <Bookmark /> Repositórios {repos.totalCount}
               </div>
             </TabsTrigger>
             <TabsTrigger
@@ -55,7 +54,13 @@ export const ProfileFrame: React.FC<ProfileFrameProps> = ({
           <TabsContent value="repositories">
             <div className="grid gap-4 mt-4">
               {repos.items.map((repo: IRepository) => (
-                <RepositoryCard key={repo.id} repository={repo} />
+                <Link
+                  key={repo.id}
+                  href={`/profile/${profile.login}/${repo.name}`}
+                  className="cursor-pointer"
+                >
+                  <RepositoryCard repository={repo} />
+                </Link>
               ))}
             </div>
           </TabsContent>

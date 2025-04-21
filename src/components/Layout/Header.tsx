@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import { Logo } from "@/components";
 import { BreadcrumbNav } from "./BreadCrumbNav";
 
 export async function Header() {
-  const h = await headers();
-  const pathname = h.get("x-invoke-path") || "";
-
   return (
     <header className="w-full h-[72px] px-4 py-2 border-b items-center bg-zinc-900 hidden md:flex">
       <Link
@@ -19,7 +15,7 @@ export async function Header() {
         </div>
       </Link>
 
-      <BreadcrumbNav pathname={pathname} />
+      <BreadcrumbNav />
     </header>
   );
 }
