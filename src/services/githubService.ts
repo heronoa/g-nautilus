@@ -12,6 +12,7 @@ import {
 } from "@/types";
 import axiosInstance from "./axiosGithubInstance";
 import { normalizeProfiles } from "@/utils/normalizeProfiles";
+import fetchWithCache from "./fetchCache";
 
 export const githubService = {
   async searchRepos(
@@ -62,14 +63,16 @@ export const githubService = {
   async getUserProfile(username: string): Promise<IProfile> {
     try {
       const url = `/users/${username}`;
-      const response = await axiosInstance.get(url);
 
-      const userProfile: IGithubUserProfile = await response.data;
+      const response = await fetchWithCache(url);
+
+      const userProfile: IGithubUserProfile = await response.json();
 
       const normalizeProfile: IProfile = normalizeProfiles([userProfile])[0];
 
       return normalizeProfile;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   },
