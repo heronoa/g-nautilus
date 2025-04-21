@@ -96,3 +96,49 @@ export interface IGithubUserProfile {
   created_at: string;
   updated_at: string;
 }
+
+export interface IGithubIssue {
+  url: string;
+  repository_url: string;
+  labels_url: string;
+  comments_url: string;
+  events_url: string;
+  html_url: string;
+  id: number;
+  node_id: string;
+  number: number;
+  title: string;
+  user: IGithubUserProfile;
+  labels: string[]; // Replace `any` with a more specific type if needed
+  state: string;
+  locked: boolean;
+  assignee: IGithubUserProfile | null;
+  assignees: IGithubUserProfile[];
+  comments: number;
+  created_at: string;
+  updated_at: string;
+  closed_at: string | null;
+  author_association: string;
+  sub_issues_summary: {
+    total: number;
+    completed: number;
+    percent_completed: number;
+  };
+  active_lock_reason: string | null;
+  body: string;
+  closed_by: IGithubUserProfile | null;
+  reactions: {
+    url: string;
+    total_count: number;
+    "+1": number;
+    "-1": number;
+    laugh: number;
+    hooray: number;
+    confused: number;
+    heart: number;
+    rocket: number;
+    eyes: number;
+  };
+  timeline_url: string;
+  state_reason: string | null;
+}
