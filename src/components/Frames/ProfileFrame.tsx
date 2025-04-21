@@ -10,7 +10,7 @@ interface ProfileFrameProps {
   repos: IPaginationReturn<IRepository>;
   starredRepos: IPaginationReturn<IRepository>;
 }
-const ProfileFrame: React.FC<ProfileFrameProps> = ({
+export const ProfileFrame: React.FC<ProfileFrameProps> = ({
   profile,
   repos,
   starredRepos,
@@ -72,4 +72,3 @@ const ProfileFrame: React.FC<ProfileFrameProps> = ({
     </div>
   );
 };
-export default ProfileFrame;

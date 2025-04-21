@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { useProfileSearch } from "@/hooks/useProfileSearch";
 import { Loading } from "../icons";
 import { IProfile } from "@/types";
-import ProfileCard from "./ProfileCard";
+import ProfileCard from "../Profile/ProfileCard";
 import { useSearchStore } from "@/store/SearchState";
 
-const SearchForm: React.FC = () => {
+export const SearchSection: React.FC = () => {
   const { searchInput, page, perPage, query, setSearchInput, submitQuery } =
     useSearchStore();
 
@@ -110,5 +110,3 @@ const SearchForm: React.FC = () => {
     </section>
   );
 };
-
-export default SearchForm;

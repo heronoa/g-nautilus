@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { headers } from "next/headers";
-import { Logo } from "@/components/icons";
+import { Logo } from "@/components";
 import { BreadcrumbNav } from "./BreadCrumbNav";
 
-export default async function Header() {
+export async function Header() {
   const h = await headers();
   const pathname = h.get("x-invoke-path") || "";
 
