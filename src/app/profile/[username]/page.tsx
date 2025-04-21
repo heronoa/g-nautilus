@@ -1,4 +1,4 @@
-import ProfileFrame from "@/components/Frames/ProfileFrame";
+import { ProfileFrame } from "@/components";
 import { githubService } from "@/services/githubService";
 
 interface ProfilePageProps {
