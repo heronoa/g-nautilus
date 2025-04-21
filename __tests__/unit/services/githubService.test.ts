@@ -17,12 +17,14 @@ describe("Github Service - searchRepos", () => {
     (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
       data: {
         items: mockRawRepos,
+        total_count: mockRawRepos.length,
       },
     });
 
     const repos = await githubService.searchRepos("react");
 
-    expect(repos).toEqual(mockRepos);
+    expect(repos.items).toEqual(mockRepos);
+    expect(repos.totalCount).toEqual(3);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
       "/search/repositories?q=react&page=1&per_page=30"
@@ -44,12 +46,14 @@ describe("Github Service - searchRepos", () => {
     (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
       data: {
         items: [],
+        total_count: 0,
       },
     });
 
     const repos = await githubService.searchRepos("nonexistentrepo");
 
-    expect(repos).toEqual([]);
+    expect(repos.items).toEqual([]);
+    expect(repos.totalCount).toEqual(0);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
   });
 });
@@ -67,7 +71,7 @@ describe("Github Service - searchUsers", () => {
 
     const users = await githubService.searchUsers("octocat");
 
-    expect(users).toEqual([mockUserProfile]);
+    expect(users.items).toEqual([mockUserProfile]);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
       "/search/users?q=octocat&page=1&per_page=30"
@@ -84,7 +88,7 @@ describe("Github Service - searchUsers", () => {
     );
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
   });
-  
+
   it("should return empty array when no users are found", async () => {
     (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
       data: {
@@ -94,7 +98,7 @@ describe("Github Service - searchUsers", () => {
 
     const users = await githubService.searchUsers("nonexistentuser");
 
-    expect(users).toEqual([]);
+    expect(users.items).toEqual([]);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
   });
 });
@@ -114,7 +118,9 @@ describe("Github Service - getUserProfile", () => {
 
     expect(profile).toEqual(mockUserProfile);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
-    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(`/users/${username}?page=1&per_page=30`);
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+      `/users/${username}?page=1&per_page=30`
+    );
   });
 
   it("should handle fetch error", async () => {

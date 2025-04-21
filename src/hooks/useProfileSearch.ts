@@ -1,6 +1,10 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { githubService } from "../services/githubService";
-import { IProfile } from "../types";
+import { IPaginationReturn, IProfile } from "../types";
 interface UseSearchOptions {
   query: string;
   page?: number;
@@ -11,7 +15,7 @@ export function useProfileSearch({
   query,
   page = 1,
   perPage = 30,
-}: UseSearchOptions): UseQueryResult<IProfile[], Error> {
+}: UseSearchOptions): UseQueryResult<IPaginationReturn<IProfile>, Error> {
   const queryKey = [query, page, perPage];
 
   return useQuery({
@@ -20,5 +24,6 @@ export function useProfileSearch({
     enabled: !!query,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
+    placeholderData: keepPreviousData,
   });
 }
