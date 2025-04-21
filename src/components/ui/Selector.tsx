@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Drawer,
   DrawerTrigger,
@@ -19,29 +19,26 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 
-const options: {
-  value: string;
-  label: string;
-}[] = [
-  { value: "option1", label: "Opção 1" },
-  { value: "option2", label: "Opção 2" },
-  { value: "option3", label: "Opção 3" },
-];
-
 interface SelectorProps {
-  placeholder?: string;
-  options?: {
+  placeholder: string;
+  options: {
     value: string;
     label: string;
   }[];
-  onChange?: SetStateAction<
-    {
-      value: string;
-      label: string;
-    }[]
+  onChange: Dispatch<
+    SetStateAction<
+      {
+        value: string;
+        label: string;
+      }[]
+    >
   >;
 }
-export const Selector: React.FC<SelectorProps> = () => {
+export const Selector: React.FC<SelectorProps> = ({
+  options,
+  placeholder,
+  onChange,
+}) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -51,6 +48,16 @@ export const Selector: React.FC<SelectorProps> = () => {
         ? prev.filter((item) => item !== option)
         : [...prev, option]
     );
+
+    onChange((prev) => {
+      const selectedOption = options.find((opt) => opt.value === option);
+      if (selectedOption) {
+        return prev.includes(selectedOption)
+          ? prev.filter((item) => item !== selectedOption)
+          : [...prev, selectedOption];
+      }
+      return prev;
+    });
   };
 
   return (
@@ -94,7 +101,7 @@ export const Selector: React.FC<SelectorProps> = () => {
             <Button variant="gradient" className="rounded-[42px] !min-w-34">
               {selectedOptions.length > 0
                 ? `${selectedOptions.length} selecionado(s)`
-                : "Type"}
+                : placeholder}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-34 fade-in text-white rounded-sm mt-1 p-4 transition-all duration-200 bg-gradient-to-r from-[#0056A6] to-[#0587FF]">
