@@ -6,10 +6,10 @@ describe("Github Service - searchRepos", () => {
   it("should fetch repositories successfully", async () => {
     const repos = await githubService.searchRepos("react");
 
-    const repo = repos[0];
+    const repo = repos.items[0];
 
     expect(repos).toBeDefined();
-    expect(Array.isArray(repos)).toBe(true);
+    expect(Array.isArray(repos.items)).toBe(true);
 
     expect(repo).toHaveProperty("id");
     expect(typeof repo.id).toBe("number");
@@ -177,6 +177,7 @@ describe("Github Service - searchUsers", () => {
     const users = await githubService.searchUsers("octocat");
 
     expect(users).toBeDefined();
-    expect(Array.isArray(users)).toBe(true);
+    expect(Array.isArray(users.items)).toBe(true);
+    expect(Number.isInteger(users.totalCount)).toBe(true);
   });
 });

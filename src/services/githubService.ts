@@ -3,6 +3,7 @@ import {
   IGithubSearchRepoDTO,
   IGithubSearchUserDTO,
   IGithubUserProfile,
+  IPaginationReturn,
   IProfile,
   IQueryOptions,
   IRawRepository,
@@ -16,7 +17,7 @@ export const githubService = {
   async searchRepos(
     query: string,
     options?: IQueryOptions
-  ): Promise<IRepository[]> {
+  ): Promise<IPaginationReturn<IRepository>> {
     try {
       const params = new URLSearchParams({
         ...(query ? { q: query } : {}),
@@ -28,7 +29,11 @@ export const githubService = {
       const response = await axiosInstance.get(url);
 
       const rawData: IGithubSearchRepoDTO = await response.data;
-      return normalizeRepos(rawData.items);
+      const repos = normalizeRepos(rawData.items);
+      return {
+        items: repos,
+        totalCount: rawData.total_count,
+      };
     } catch (error) {
       throw new Error(`GitHub API error: ${error}`);
     }
@@ -37,7 +42,7 @@ export const githubService = {
   async searchUsers(
     query: string,
     options?: IQueryOptions
-  ): Promise<IProfile[]> {
+  ): Promise<IPaginationReturn<IProfile>> {
     try {
       const params = new URLSearchParams({
         ...(query && { q: query }),
@@ -48,7 +53,7 @@ export const githubService = {
       const response = await axiosInstance.get(url);
       const rawData: IGithubSearchUserDTO = await response.data;
       const users: IProfile[] = normalizeProfiles(rawData.items);
-      return users;
+      return { items: users, totalCount: rawData.total_count };
     } catch (error: unknown) {
       throw error;
     }

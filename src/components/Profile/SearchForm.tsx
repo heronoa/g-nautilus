@@ -1,25 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useProfileSearch } from "@/hooks/useProfileSearch";
 import { Loading } from "../icons";
 import { IProfile } from "@/types";
 import ProfileCard from "./ProfileCard";
+import { useSearchStore } from "@/store/SearchState";
 
 const SearchForm: React.FC = () => {
-  const [search, setSearch] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
+  const { searchInput, page, perPage, query, setSearchInput, submitQuery } =
+    useSearchStore();
 
-  const { data, isLoading, error } = useProfileSearch({
-    query: submittedQuery,
+  const [profiles, setProfiles] = useState<IProfile[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
+
+  const { data, isLoading, error, isFetching } = useProfileSearch({
+    query,
+    page,
+    perPage,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmittedQuery(search);
+    setProfiles([]);
+    submitQuery();
+    setHasSearched(false);
   };
+
+  const handleLoadMore = () => {
+    if (!isFetching) {
+      useSearchStore.setState((state) => ({
+        page: state.page + 1,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    if (data) {
+      setTotalCount(data.totalCount);
+      setProfiles((prev) =>
+        page === 1 ? data.items : [...prev, ...data.items]
+      );
+      if (page === 1) {
+        setHasSearched(true);
+      }
+    }
+  }, [data, page]);
+
+  const showLoadMoreButton =
+    hasSearched && !isLoading && !isFetching && profiles.length < totalCount;
+
+  const fetchLoading = isLoading || isFetching;
 
   return (
     <section>
@@ -30,19 +64,17 @@ const SearchForm: React.FC = () => {
         <Input
           type="text"
           placeholder="Digite o nome do usuário"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
         <div className="relative w-full">
-          {isLoading && (
-            <Loading className="w-full h-full text-black absolute " />
+          {fetchLoading && (
+            <Loading className="w-full h-full text-black absolute" />
           )}
           <Button
-            className="cursor-pointer w-full px-12 md:w-fit bg-gradient-to-r
-              from-[#0056A6]
-              to-[#0587FF]"
+            className="cursor-pointer w-full px-12 md:w-fit bg-gradient-to-r from-[#0056A6] to-[#0587FF]"
             type="submit"
-            disabled={isLoading}
+            disabled={fetchLoading}
           >
             Buscar
           </Button>
@@ -52,16 +84,28 @@ const SearchForm: React.FC = () => {
       {isLoading && <p className="text-muted-foreground">Carregando...</p>}
       {error && <p className="text-red-500">Erro: {error.message}</p>}
 
-      {data && data.length > 0 && (
+      {!isLoading && profiles.length > 0 && (
         <section className="space-y-4">
-          {data.map((profile: IProfile, index: number) => (
+          {profiles.map((profile: IProfile, index: number) => (
             <ProfileCard key={index} profile={profile} />
           ))}
         </section>
       )}
 
-      {data && data.length === 0 && (
+      {!isLoading && hasSearched && profiles.length === 0 && (
         <p className="text-muted-foreground">Nenhum usuário encontrado.</p>
+      )}
+
+      {showLoadMoreButton && (
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={handleLoadMore}
+            disabled={isFetching}
+            className="cursor-pointer w-full px-12 md:w-fit bg-gradient-to-r from-[#0056A6] to-[#0587FF]"
+          >
+            {isFetching ? "Carregando..." : "Carregar mais"}
+          </Button>
+        </div>
       )}
     </section>
   );
