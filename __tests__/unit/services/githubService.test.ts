@@ -16,6 +16,8 @@ import { githubService } from "@/services/githubService";
 import { mockRepos, mockUserProfile } from "@/tests/mocks";
 import { C } from "@/utils";
 import { IRepository } from "@/types";
+import { mockRawIssues, mockNormalizedIssues } from "@/tests/mocks/issues";
+import { IIssue } from "@/types/issues";
 
 describe("Github Service - searchRepos", () => {
   beforeEach(() => {
@@ -320,21 +322,26 @@ describe("Github Service - getRepo", () => {
       json: async () => mockRawRepos[0],
     });
 
-    const username = "octocat/repo";
-    const repo = await githubService.getRepo(username);
+    const username = "octocat";
+    const repoName = "repo";
+
+    const repo = await githubService.getRepo(username, repoName);
 
     expect(repo).toEqual(mockRepos[0]);
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(`${C.githubApiUrl}/repos/${username}`, {
-      cache: "force-cache",
-      headers: {
-        Authorization: `Bearer ${C.githubApiToken}`,
-        "Content-Type": "application/json",
-        "User-Agent": "g-nautilus",
-      },
-      next: { revalidate: 60 },
-      redirect: "follow",
-    });
+    expect(fetch).toHaveBeenCalledWith(
+      `${C.githubApiUrl}/repos/${username}/${repoName}`,
+      {
+        cache: "force-cache",
+        headers: {
+          Authorization: `Bearer ${C.githubApiToken}`,
+          "Content-Type": "application/json",
+          "User-Agent": "g-nautilus",
+        },
+        next: { revalidate: 60 },
+        redirect: "follow",
+      }
+    );
   });
 
   it("should handle fetch error", async () => {
@@ -342,7 +349,7 @@ describe("Github Service - getRepo", () => {
       new Error("GitHub API error: 500")
     );
 
-    await expect(githubService.getRepo("octocat/repo")).rejects.toThrow(
+    await expect(githubService.getRepo("octocat", "repo")).rejects.toThrow(
       "GitHub API error: 500"
     );
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -392,52 +399,131 @@ describe("Github Service - getAllUserRepos", () => {
     expect(allRepos.items[39].name).toBe("Repo40");
   });
 });
-describe("Github Service - getAllUserStarredRepos", () => {
+
+describe("Github Service - getIssues", () => {
+  describe("Github Service - getIssues", () => {
+    beforeEach(() => {
+      (fetch as jest.Mock).mockClear();
+    });
+
+    it("should fetch issues successfully", async () => {
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        json: async () => mockRawIssues,
+      });
+
+      const username = "octocat";
+      const repoName = "repo";
+      const issues = await githubService.getIssues(username, repoName);
+
+      expect(issues).toEqual(mockNormalizedIssues);
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith(
+        `${C.githubApiUrl}/repos/${username}/${repoName}/issues?page=1&per_page=30`,
+        {
+          cache: "force-cache",
+          headers: {
+            Authorization: `Bearer ${C.githubApiToken}`,
+            "Content-Type": "application/json",
+            "User-Agent": "g-nautilus",
+          },
+          next: { revalidate: 60 },
+          redirect: "follow",
+        }
+      );
+    });
+
+    it("should handle fetch error", async () => {
+      (fetch as jest.Mock).mockRejectedValueOnce(
+        new Error("GitHub API error: 500")
+      );
+
+      await expect(githubService.getIssues("octocat", "repo")).rejects.toThrow(
+        "GitHub API error: 500"
+      );
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return an empty array when no issues are found", async () => {
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        json: async () => [],
+      });
+
+      const username = "octocat";
+      const repoName = "repo";
+      const issues = await githubService.getIssues(username, repoName);
+
+      expect(issues).toEqual([]);
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith(
+        `${C.githubApiUrl}/repos/${username}/${repoName}/issues?page=1&per_page=30`,
+        {
+          cache: "force-cache",
+          headers: {
+            Authorization: `Bearer ${C.githubApiToken}`,
+            "Content-Type": "application/json",
+            "User-Agent": "g-nautilus",
+          },
+          next: { revalidate: 60 },
+          redirect: "follow",
+        }
+      );
+    });
+  });
+});
+
+describe("Github Service - getAllIssues", () => {
   beforeEach(() => {
     jest
-      .spyOn(githubService, "getUserStarredRepos")
-      .mockImplementation(async (_username: string, options) => {
-        const perPage = options?.perPage || 30;
-        const page = options?.page || 1;
+      .spyOn(githubService, "getIssues")
+      .mockImplementation(
+        async (_username: string, _repoName: string, options) => {
+          const perPage = options?.perPage || 30;
+          const page = options?.page || 1;
 
-        if (page === 1) {
-          return Array.from({ length: perPage }, (_, i) => ({
-            id: i + 1,
-            name: `Repo${i + 1}`,
-          })) as IRepository[];
-        } else if (page === 2) {
-          return Array.from({ length: 10 }, (_, i) => ({
-            id: i + 31,
-            name: `Repo${i + 31}`,
-          })) as IRepository[];
-        } else {
-          return [];
+          if (page === 1) {
+            return Array.from({ length: perPage }, (_, i) => ({
+              id: i + 1,
+              title: `Issue${i + 1}`,
+            })) as IIssue[];
+          } else if (page === 2) {
+            return Array.from({ length: 10 }, (_, i) => ({
+              id: i + 31,
+              title: `Issue${i + 31}`,
+            })) as IIssue[];
+          } else {
+            return [];
+          }
         }
-      });
+      );
   });
 
-  it("deve buscar todos os repositórios paginados de um usuário", async () => {
-    const allStarredRepos = await githubService.getAllUserStarredRepos("usuarioTeste");
-
-    expect(githubService.getUserStarredRepos).toHaveBeenCalledTimes(2);
-    expect(githubService.getUserStarredRepos).toHaveBeenCalledWith(
+  it("deve buscar todos os issues paginados de um repositório", async () => {
+    const allIssues = await githubService.getAllIssues(
       "usuarioTeste",
+      "repoTeste"
+    );
+
+    expect(githubService.getIssues).toHaveBeenCalledTimes(2);
+    expect(githubService.getIssues).toHaveBeenCalledWith(
+      "usuarioTeste",
+      "repoTeste",
       {
         perPage: 30,
         page: 1,
       }
     );
-    expect(githubService.getUserStarredRepos).toHaveBeenCalledWith(
+    expect(githubService.getIssues).toHaveBeenCalledWith(
       "usuarioTeste",
+      "repoTeste",
       {
         perPage: 30,
         page: 2,
       }
     );
 
-    expect(allStarredRepos.items).toHaveLength(40);
-    expect(allStarredRepos.totalCount).toBe(40);
-    expect(allStarredRepos.items[0].name).toBe("Repo1");
-    expect(allStarredRepos.items[39].name).toBe("Repo40");
+    expect(allIssues.items).toHaveLength(40);
+    expect(allIssues.totalCount).toBe(40);
+    expect(allIssues.items[0].title).toBe("Issue1");
+    expect(allIssues.items[39].title).toBe("Issue40");
   });
 });

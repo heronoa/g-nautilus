@@ -22,6 +22,9 @@ export const normalizeRepos = (rawData: IRawRepository[]): IRepository[] => {
         ? repo?.owner?.html_url || ""
         : "",
     },
+    htmlUrl: isValidUrl(repo?.html_url)
+      ? repo?.html_url || undefined
+      : undefined,
     mirrorUrl:
       repo?.mirror_url && isValidUrl(repo?.mirror_url)
         ? repo?.mirror_url

@@ -13,6 +13,8 @@ import {
 import axiosInstance from "./axiosGithubInstance";
 import { normalizeProfiles } from "@/utils/normalizeProfiles";
 import fetchWithCache from "./fetchCache";
+import { normalizeIssue } from "@/utils/normalizeIssues";
+import { IIssue, IRawIssue } from "@/types/issues";
 
 export const githubService = {
   async searchRepos(
@@ -103,13 +105,37 @@ export const githubService = {
     }
   },
 
-  async getRepo(username: string) {
+  async getRepo(username: string, repoName: string): Promise<IRepository> {
     try {
-      const url = `/repos/${username}`;
+      const url = `/repos/${username}/${repoName}`;
       const response = await fetchWithCache<IRawRepository>(url);
       const repo = response.data;
       const normalizedRepo: IRepository = normalizeRepos([repo])[0];
       return normalizedRepo;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async getIssues(
+    username: string,
+    repoName: string,
+    options?: IRepoQueryOptions
+  ): Promise<IIssue[]> {
+    try {
+      const params = new URLSearchParams({
+        ...(options?.language && {
+          q: `language:${options?.language}`,
+        }),
+        page: options?.page?.toString() || "1",
+        per_page: options?.perPage?.toString() || "30",
+      });
+
+      const url = `/repos/${username}/${repoName}/issues${params.toString() ? `?${params.toString()}` : ""}`;
+      const response = await fetchWithCache<IRawIssue[]>(url);
+      const issues = response.data;
+      const normalizedIssues: IIssue[] = normalizeIssue(issues);
+      return normalizedIssues;
     } catch (error) {
       throw error;
     }
@@ -190,6 +216,39 @@ export const githubService = {
     const paginatedReturn = allStarredRepos.reduce(
       (acc: IPaginationReturn<IRepository>, repo: IRepository) => {
         acc.items.push(repo);
+        acc.totalCount += 1;
+        return acc;
+      },
+      { items: [], totalCount: 0 }
+    );
+
+    return paginatedReturn;
+  },
+
+  async getAllIssues(
+    username: string,
+    repoName: string
+  ): Promise<IPaginationReturn<IIssue>> {
+    const allIssues: IIssue[] = [];
+    let page = 1;
+    const perPage = 30;
+
+    while (true) {
+      const paginatedIssues = await this.getIssues(username, repoName, {
+        page,
+        perPage,
+      });
+
+      allIssues.push(...paginatedIssues);
+
+      if (paginatedIssues.length < perPage) break;
+
+      page++;
+    }
+
+    const paginatedReturn = allIssues.reduce(
+      (acc: IPaginationReturn<IIssue>, issue: IIssue) => {
+        acc.items.push(issue);
         acc.totalCount += 1;
         return acc;
       },
