@@ -10,14 +10,10 @@ interface ProfilePageProps {
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
   const profile = await githubService.getUserProfile(username);
-  const repos = await githubService.getUserRepos(username, {
-    page: 1,
-    perPage: 30,
-  });
-  const starredRepos = await githubService.getUserStarredRepos(username, {
-    page: 1,
-    perPage: 30,
-  });
+  const repos = await githubService.getAllUserRepos(username);
+  const starredRepos = await githubService.getAllUserStarredRepos(username);
 
-  return <ProfileFrame profile={profile} repos={repos} starredRepos={starredRepos} />;
+  return (
+    <ProfileFrame profile={profile} repos={repos} starredRepos={starredRepos} />
+  );
 }
