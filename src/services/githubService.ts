@@ -12,6 +12,7 @@ import {
 } from "@/types";
 import axiosInstance from "./axiosGithubInstance";
 import { normalizeProfiles } from "@/utils/normalizeProfiles";
+import fetchWithCache from "./fetchCache";
 
 export const githubService = {
   async searchRepos(
@@ -59,25 +60,19 @@ export const githubService = {
     }
   },
 
-  async getUserProfile(
-    username: string,
-    options?: IQueryOptions
-  ): Promise<IProfile> {
+  async getUserProfile(username: string): Promise<IProfile> {
     try {
-      const params = new URLSearchParams({
-        page: options?.page?.toString() || "1",
-        per_page: options?.perPage?.toString() || "30",
-      });
+      const url = `/users/${username}`;
 
-      const url = `/users/${username}${params.toString() ? `?${params.toString()}` : ""}`;
-      const response = await axiosInstance.get(url);
+      const response = await fetchWithCache(url);
 
-      const userProfile: IGithubUserProfile = await response.data;
+      const userProfile: IGithubUserProfile = await response.json();
 
       const normalizeProfile: IProfile = normalizeProfiles([userProfile])[0];
 
       return normalizeProfile;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   },
@@ -103,6 +98,18 @@ export const githubService = {
         normalizeRepos(starredRepos);
 
       return normalizedStarredRepos;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async getRepo(username: string) {
+    try {
+      const url = `/repos/${username}`;
+      const response = await axiosInstance.get(url);
+      const repo: IRawRepository = await response.data;
+      const normalizedRepo: IRepository = normalizeRepos([repo])[0];
+      return normalizedRepo;
     } catch (error) {
       throw error;
     }

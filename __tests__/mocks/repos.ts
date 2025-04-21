@@ -22,6 +22,7 @@ export const mockRawRepos: IRawRepository[] = [
     archived: false,
     created_at: "2025-04-18T00:00:00Z",
     mirror_url: null,
+    forks_count: 0,
   },
   {
     id: 2,
@@ -44,6 +45,7 @@ export const mockRawRepos: IRawRepository[] = [
     archived: false,
     created_at: "2025-04-17T00:00:00Z",
     mirror_url: null,
+    forks_count: 0,
   },
   {
     id: 2,
@@ -66,6 +68,7 @@ export const mockRawRepos: IRawRepository[] = [
     archived: true,
     created_at: "2025-04-17T00:00:00Z",
     mirror_url: undefined,
+    forks_count: 0,
   },
 ];
 
@@ -88,6 +91,7 @@ export const mockRepos: IRepository[] = [
     archived: false,
     createdAt: new Date("2025-04-18T00:00:00Z"),
     mirrorUrl: undefined,
+    forkCount: 0,
   },
   {
     id: 2,
@@ -107,6 +111,7 @@ export const mockRepos: IRepository[] = [
     archived: false,
     createdAt: new Date("2025-04-17T00:00:00Z"),
     mirrorUrl: undefined,
+    forkCount: 0,
   },
   {
     id: 2,
@@ -126,5 +131,6 @@ export const mockRepos: IRepository[] = [
     archived: true,
     createdAt: new Date("2025-04-17T00:00:00Z"),
     mirrorUrl: undefined,
+    forkCount: 0,
   },
 ];

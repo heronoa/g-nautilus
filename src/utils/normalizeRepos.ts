@@ -16,10 +16,10 @@ export const normalizeRepos = (rawData: IRawRepository[]): IRepository[] => {
     createdAt: parseDate(repo?.created_at),
     pushedAt: parseDate(repo?.pushed_at),
     owner: {
-      login: repo.owner?.login || "Unknown",
-      avatarUrl: repo.owner?.avatar_url || "",
+      login: repo?.owner?.login || "Unknown",
+      avatarUrl: repo?.owner?.avatar_url || "",
       htmlUrl: isValidUrl(repo?.owner?.html_url)
-        ? repo.owner?.html_url || ""
+        ? repo?.owner?.html_url || ""
         : "",
     },
     mirrorUrl:
@@ -30,5 +30,6 @@ export const normalizeRepos = (rawData: IRawRepository[]): IRepository[] => {
       typeof repo?.watchers_count === "number" ? repo?.watchers_count : 0,
     fork: repo?.fork ?? false,
     archived: repo?.archived ?? false,
+    forkCount: repo?.forks_count ?? 0,
   }));
 };
