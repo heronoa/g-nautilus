@@ -117,9 +117,21 @@ export const githubService = {
     }
   },
 
-  async getIssues(username: string, repoName: string): Promise<IIssue[]> {
+  async getIssues(
+    username: string,
+    repoName: string,
+    options?: IRepoQueryOptions
+  ): Promise<IIssue[]> {
     try {
-      const url = `/repos/${username}/${repoName}/issues`;
+      const params = new URLSearchParams({
+        ...(options?.language && {
+          q: `language:${options?.language}`,
+        }),
+        page: options?.page?.toString() || "1",
+        per_page: options?.perPage?.toString() || "30",
+      });
+
+      const url = `/repos/${username}/${repoName}/issues${params.toString() ? `?${params.toString()}` : ""}`;
       const response = await fetchWithCache<IRawIssue[]>(url);
       const issues = response.data;
       const normalizedIssues: IIssue[] = normalizeIssue(issues);
@@ -204,6 +216,39 @@ export const githubService = {
     const paginatedReturn = allStarredRepos.reduce(
       (acc: IPaginationReturn<IRepository>, repo: IRepository) => {
         acc.items.push(repo);
+        acc.totalCount += 1;
+        return acc;
+      },
+      { items: [], totalCount: 0 }
+    );
+
+    return paginatedReturn;
+  },
+
+  async getAllIssues(
+    username: string,
+    repoName: string
+  ): Promise<IPaginationReturn<IIssue>> {
+    const allIssues: IIssue[] = [];
+    let page = 1;
+    const perPage = 30;
+
+    while (true) {
+      const paginatedIssues = await this.getIssues(username, repoName, {
+        page,
+        perPage,
+      });
+
+      allIssues.push(...paginatedIssues);
+
+      if (paginatedIssues.length < perPage) break;
+
+      page++;
+    }
+
+    const paginatedReturn = allIssues.reduce(
+      (acc: IPaginationReturn<IIssue>, issue: IIssue) => {
+        acc.items.push(issue);
         acc.totalCount += 1;
         return acc;
       },

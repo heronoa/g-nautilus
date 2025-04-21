@@ -17,6 +17,7 @@ import { mockRepos, mockUserProfile } from "@/tests/mocks";
 import { C } from "@/utils";
 import { IRepository } from "@/types";
 import { mockRawIssues, mockNormalizedIssues } from "@/tests/mocks/issues";
+import { IIssue } from "@/types/issues";
 
 describe("Github Service - searchRepos", () => {
   beforeEach(() => {
@@ -417,7 +418,7 @@ describe("Github Service - getIssues", () => {
       expect(issues).toEqual(mockNormalizedIssues);
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith(
-        `${C.githubApiUrl}/repos/${username}/${repoName}/issues`,
+        `${C.githubApiUrl}/repos/${username}/${repoName}/issues?page=1&per_page=30`,
         {
           cache: "force-cache",
           headers: {
@@ -454,7 +455,7 @@ describe("Github Service - getIssues", () => {
       expect(issues).toEqual([]);
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith(
-        `${C.githubApiUrl}/repos/${username}/${repoName}/issues`,
+        `${C.githubApiUrl}/repos/${username}/${repoName}/issues?page=1&per_page=30`,
         {
           cache: "force-cache",
           headers: {
@@ -467,5 +468,62 @@ describe("Github Service - getIssues", () => {
         }
       );
     });
+  });
+});
+
+describe("Github Service - getAllIssues", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(githubService, "getIssues")
+      .mockImplementation(
+        async (_username: string, _repoName: string, options) => {
+          const perPage = options?.perPage || 30;
+          const page = options?.page || 1;
+
+          if (page === 1) {
+            return Array.from({ length: perPage }, (_, i) => ({
+              id: i + 1,
+              title: `Issue${i + 1}`,
+            })) as IIssue[];
+          } else if (page === 2) {
+            return Array.from({ length: 10 }, (_, i) => ({
+              id: i + 31,
+              title: `Issue${i + 31}`,
+            })) as IIssue[];
+          } else {
+            return [];
+          }
+        }
+      );
+  });
+
+  it("deve buscar todos os issues paginados de um repositório", async () => {
+    const allIssues = await githubService.getAllIssues(
+      "usuarioTeste",
+      "repoTeste"
+    );
+
+    expect(githubService.getIssues).toHaveBeenCalledTimes(2);
+    expect(githubService.getIssues).toHaveBeenCalledWith(
+      "usuarioTeste",
+      "repoTeste",
+      {
+        perPage: 30,
+        page: 1,
+      }
+    );
+    expect(githubService.getIssues).toHaveBeenCalledWith(
+      "usuarioTeste",
+      "repoTeste",
+      {
+        perPage: 30,
+        page: 2,
+      }
+    );
+
+    expect(allIssues.items).toHaveLength(40);
+    expect(allIssues.totalCount).toBe(40);
+    expect(allIssues.items[0].title).toBe("Issue1");
+    expect(allIssues.items[39].title).toBe("Issue40");
   });
 });
