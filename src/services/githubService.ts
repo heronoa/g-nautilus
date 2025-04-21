@@ -59,17 +59,9 @@ export const githubService = {
     }
   },
 
-  async getUserProfile(
-    username: string,
-    options?: IQueryOptions
-  ): Promise<IProfile> {
+  async getUserProfile(username: string): Promise<IProfile> {
     try {
-      const params = new URLSearchParams({
-        page: options?.page?.toString() || "1",
-        per_page: options?.perPage?.toString() || "30",
-      });
-
-      const url = `/users/${username}${params.toString() ? `?${params.toString()}` : ""}`;
+      const url = `/users/${username}`;
       const response = await axiosInstance.get(url);
 
       const userProfile: IGithubUserProfile = await response.data;
@@ -103,6 +95,18 @@ export const githubService = {
         normalizeRepos(starredRepos);
 
       return normalizedStarredRepos;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async getRepo(username: string) {
+    try {
+      const url = `/repos/${username}`;
+      const response = await axiosInstance.get(url);
+      const repo: IRawRepository = await response.data;
+      const normalizedRepo: IRepository = normalizeRepos([repo])[0];
+      return normalizedRepo;
     } catch (error) {
       throw error;
     }

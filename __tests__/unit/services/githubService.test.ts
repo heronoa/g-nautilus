@@ -118,9 +118,7 @@ describe("Github Service - getUserProfile", () => {
 
     expect(profile).toEqual(mockUserProfile);
     expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
-    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `/users/${username}?page=1&per_page=30`
-    );
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(`/users/${username}`);
   });
 
   it("should handle fetch error", async () => {
@@ -140,12 +138,9 @@ describe("Github Service - getUserProfile", () => {
     });
 
     const username = "octocat";
-    const options = { page: 2, perPage: 10 };
-    await githubService.getUserProfile(username, options);
+    await githubService.getUserProfile(username);
 
-    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
-      `/users/${username}?page=${options.page}&per_page=${options.perPage}`
-    );
+    expect(mockedAxiosInstance.get).toHaveBeenCalledWith(`/users/${username}`);
   });
 });
 
@@ -238,5 +233,39 @@ describe("Github Service - getUserRepos", () => {
     expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
       `/users/${username}/repos?page=${options.page}&per_page=${options.perPage}&type=all`
     );
+  });
+});
+
+describe("Github Service - getRepo", () => {
+  describe("Github Service - getRepo", () => {
+    beforeEach(() => {
+      (mockedAxiosInstance.get as jest.Mock).mockClear();
+    });
+
+    it("should fetch a repository successfully", async () => {
+      (mockedAxiosInstance.get as jest.Mock).mockResolvedValueOnce({
+        data: mockRawRepos[0],
+      });
+
+      const username = "octocat/repo";
+      const repo = await githubService.getRepo(username);
+
+      expect(repo).toEqual(mockRepos[0]);
+      expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+      expect(mockedAxiosInstance.get).toHaveBeenCalledWith(
+        `/repos/${username}`
+      );
+    });
+
+    it("should handle fetch error", async () => {
+      (mockedAxiosInstance.get as jest.Mock).mockRejectedValueOnce(
+        new Error("GitHub API error: 500")
+      );
+
+      await expect(githubService.getRepo("octocat/repo")).rejects.toThrow(
+        "GitHub API error: 500"
+      );
+      expect(mockedAxiosInstance.get).toHaveBeenCalledTimes(1);
+    });
   });
 });
