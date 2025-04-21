@@ -27,7 +27,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ profile }) => {
         >
           {profile.login}
         </Link>
-        <p className="text-sm text-muted-foreground">{profile.htmlUrl}</p>
+
+        <a href={profile.htmlUrl} target="_blank" rel="noopener noreferrer">
+          <p className="text-sm text-muted-foreground">{profile.htmlUrl}</p>
+        </a>
       </div>
     </div>
   );
