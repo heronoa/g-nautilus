@@ -9,7 +9,7 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Close } from "../icons";
+import { ChevronDown2, Close } from "../icons";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -90,19 +90,24 @@ export const Selector: React.FC<SelectorProps> = ({
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="gradient" className="rounded-[42px]">
-              Abrir Seleção
+              <ChevronDown2 />{" "}
+              <span className="truncate">
+                {selectedOptions.length > 0
+                  ? `${selectedOptions.length} selecionado(s)`
+                  : placeholder}
+              </span>
             </Button>
           </DrawerTrigger>
           <DrawerContent className="inset-0 !mt-0">
             <DrawerTitle>
-              <div className="flex items-center justify-between mx-4">
-                <h2 className="text-xl font-bold ">Selecione as opções</h2>
+              <div className="flex items-center justify-between mx-6">
+                <h2 className="text-2xl font-bold ">{placeholder}</h2>
                 <DrawerClose>
                   <Close />
                 </DrawerClose>
               </div>
             </DrawerTitle>
-            <div className="p-6  ">
+            <div className="px-12 py-[46px]">
               {optionsToDisplay.map((option) => (
                 <label key={option.value} className="block mb-2">
                   <input
@@ -124,10 +129,13 @@ export const Selector: React.FC<SelectorProps> = ({
       <div className="hidden md:block">
         <DropdownMenu open={open} onOpenChange={setOpen} defaultOpen={false}>
           <DropdownMenuTrigger asChild>
-            <Button variant="gradient" className="rounded-[42px] !min-w-34">
-              {selectedOptions.length > 0
-                ? `${selectedOptions.length} selecionado(s)`
-                : placeholder}
+            <Button variant="gradient" className="rounded-[42px] max-w-34">
+              <ChevronDown2 />
+              <span className="truncate">
+                {selectedOptions.length > 0
+                  ? `${selectedOptions.length} selecionado(s)`
+                  : placeholder}
+              </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-34 fade-in text-white rounded-sm my-1 px-2 py-1 overflow-y-auto transition-all duration-200 bg-gradient-to-r from-[#0056A6] to-[#0587FF]">

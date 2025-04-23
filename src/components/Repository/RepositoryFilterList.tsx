@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { RepositoryCard } from "@/components";
+import { RepositoryCard, Search } from "@/components";
 import { IPaginationReturn, IRepository } from "@/types";
 import { Selector } from "../ui/Selector";
 import { filterAndSortRepos } from "@/utils/filterRepos";
@@ -63,7 +63,7 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
 
   return (
     <section>
-      <div className="flex justify-between">
+      <div className="flex justify-between md:flex-row-reverse ">
         <div className="flex gap-4">
           <Selector
             placeholder="Type"
@@ -76,14 +76,30 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
             onChange={setSelectedLanguages}
           />
         </div>
-        <div>
+        <div className="hidden md:block">
           <Input
-            placeholder="Search repositories..."
+            icon={<Search color="#989898" />}
+            placeholder="Search Here"
+            className="border-0 border-b-2 rounded-none border-[#F4F4F4] focus:border-gray-500 focus:ring-0"
             value={searchParam}
             onChange={(e) => setSearchParam(e.target.value)}
           />
         </div>
-        <div></div>
+        <div className="flex justify-center items-center md:hidden cursor-pointer relative group  ">
+          <Search />
+          <div
+            className={` 
+              bg-amber-50 absolute -right-0 transition-all duration-300 ease-in-out  group-focus-within:translate-x-[-15vw]   group-focus-within:w-[80vw] group-focus-within:opacity-100 translate-x-0 opacity-0 w-[80vw] not-focus-within:w-8 not-focus:w-8
+              `}
+          >
+            <Input
+              placeholder="Search Here"
+              className="border-0 border-b-2 rounded-none border-[#F4F4F4] focus:border-gray-500 not-focus-within:cursor-pointer not-focus:cursor-pointer not-focus-visible:cursor-pointer focus:ring-0"
+              value={searchParam}
+              onChange={(e) => setSearchParam(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
       {(selectedLanguages.length > 0 || selectedTypes.length > 0) && (
         <aside className="flex items-center justify-between mt-4 text-gray-600">

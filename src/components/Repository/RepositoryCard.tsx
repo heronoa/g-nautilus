@@ -7,13 +7,14 @@ interface RepositoryCardProps {
 
 export const RepositoryCard = ({ repository }: RepositoryCardProps) => {
   return (
-    <div className="p-4 rounded-md  bg-white">
-      <h3 className="text-lg font-medium ">
-        {repository.owner.login} /{" "}
-        <span className="text-[#0587ff]">{repository.name}</span>
-      </h3>
+    <div className="p-4 rounded-md space-y-4  bg-white">
+      <h5 className="text-lg font-normal flex gap-1 ">
+        <span className="font-light">{repository.owner.login}</span>
+        <span className="">/</span>
+        <span className="text-template-blue">{repository.name}</span>
+      </h5>
       <p className="text-sm text-muted-foreground">{repository.description}</p>
-      <div className="text-xs gap-3 flex text-zinc-500 mt-2">
+      <div className="text-xs gap-3 flex text-zinc-500">
         <span className="flex gap-1 items-center">
           <StarFilled />
           {repository.stargazers_count}
