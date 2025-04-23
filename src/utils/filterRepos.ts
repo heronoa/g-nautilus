@@ -10,6 +10,13 @@ export function filterAndSortRepos(
     filtered = filterByName(filtered, filters.searchParam);
   }
 
+  if (filters.language) {
+    filtered = filterByLanguage(
+      filtered,
+      filters.language.split(",").map((lang) => lang.trim())
+    );
+  }
+
   if (filters.onlyForks) {
     filtered = filterByFork(filtered, true);
   }
@@ -31,6 +38,18 @@ export function filterAndSortRepos(
   }
 
   return filtered;
+}
+
+export function filterByLanguage(
+  repos: IRepository[],
+  languages: string[]
+): IRepository[] {
+  if (languages.length === 0) return repos;
+  return repos.filter((repo) =>
+    languages.some(
+      (lang) => repo.language?.toLowerCase() === lang.toLowerCase()
+    )
+  );
 }
 
 export function filterByFork(

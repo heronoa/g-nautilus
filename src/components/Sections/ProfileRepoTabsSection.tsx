@@ -1,7 +1,6 @@
 import { IPaginationReturn, IProfile, IRepository } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
-import { IconsStar, Bookmark, RepositoryCard } from "@/components";
-import Link from "next/link";
+import { IconsStar, Bookmark, RepositoryFilterList } from "@/components";
 
 interface ProfileRepoTabsSectionProps {
   profile: IProfile;
@@ -17,7 +16,7 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
   return (
     <section className="w-full max-w-3xl">
       <Tabs defaultValue="repositories" className="w-full flex flex-col">
-        <TabsList className="flex gap-4 p-2  dark:bg-zinc-800 rounded-md">
+        <TabsList className="flex gap-4 p-2 rounded-md">
           {[
             {
               value: "repositories",
@@ -34,12 +33,12 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
           ].map((tab) => (
             <TabsTrigger
               key={tab.value}
-              className="flex-1 flex justify-center items-center cursor-pointer  relative group"
+              className="flex-1 flex justify-center items-center cursor-pointer data-[state=inactive]:opacity-50 relative group"
               value={tab.value}
             >
               <div className="flex items-center gap-2">
                 {tab.icon} {tab.label}
-                <span className="w-10 h-6 rounded-full border solid border-gray-200">
+                <span className="w-10 h-6 rounded-full border solid bg-[#F8F8F8] border-gray-[#DBDBDB]">
                   {tab.count}
                 </span>
               </div>
@@ -56,23 +55,39 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
 
         <TabsContent value="repositories">
           <div className="grid gap-4 mt-4">
-            {repos.items.map((repo: IRepository) => (
-              <Link
-                key={repo.id}
-                href={`/profile/${profile.login}/${repo.name}`}
-                className="cursor-pointer"
-              >
-                <RepositoryCard repository={repo} />
-              </Link>
-            ))}
+            {repos.items.length <= 0 && (
+              <div className="flex flex-col items-center justify-center p-4 bg-white rounded-md shadow-md">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Nenhum repositório encontrado
+                </h2>
+                <p className="text-gray-500">
+                  {profile.login} não tem repositórios.
+                </p>
+              </div>
+            )}
+            {repos.items.length > 0 && (
+              <RepositoryFilterList repos={repos} username={profile.login} />
+            )}
           </div>
         </TabsContent>
-
         <TabsContent value="starred">
           <div className="grid gap-4 mt-4">
-            {starredRepos.items.map((repo: IRepository) => (
-              <RepositoryCard key={repo.id} repository={repo} />
-            ))}
+            {starredRepos.items.length <= 0 && (
+              <div className="flex flex-col items-center justify-center p-4 bg-white rounded-md ">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  Nenhum repositório com estrela encontrado
+                </h2>
+                <p className="text-gray-500">
+                  {profile.login} não tem repositórios com estrela.
+                </p>
+              </div>
+            )}
+            {starredRepos.items.length > 0 && (
+              <RepositoryFilterList
+                repos={starredRepos}
+                username={profile.login}
+              />
+            )}
           </div>
         </TabsContent>
       </Tabs>

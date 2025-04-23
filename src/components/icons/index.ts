@@ -3,6 +3,7 @@ export { default as BranchRegular } from "./BranchRegular";
 export { default as Chain } from "./Chain";
 export { default as ChevronDown2 } from "./ChevronDown2";
 export { default as ChevronDown3 } from "./ChevronDown3";
+export { default as Close } from "./Close";
 export { default as Compass } from "./Compass";
 export { default as Enterprise } from "./Enterprise";
 export { default as IconsStar } from "./IconsStar";
