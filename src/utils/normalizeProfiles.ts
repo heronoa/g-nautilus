@@ -4,6 +4,10 @@ import { isValidUrl, parseDate } from "./helpers";
 export const normalizeProfiles = (
   rawProfile: IGithubUserProfile[]
 ): IProfile[] => {
+  if (!rawProfile || !Array.isArray(rawProfile)) {
+    return [];
+  }
+
   return rawProfile.map((profile) => ({
     login: profile.login || "",
     id: profile.id,
