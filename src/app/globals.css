@@ -4,6 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-template-blue: var(--template-blue);
+  --color-template-lightblue: var(--color-template-lightblue);
+  --color-template-gray: var(--color-template-gray);
+  --color-template-salmon: var(--color-template-salmon);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -44,6 +48,10 @@
 }
 
 :root {
+  --template-blue: #0587ff;
+  --template-lightblue: #0056a6;
+  --template-gray: #989898;
+  --template-salmon: #fd8c73;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
