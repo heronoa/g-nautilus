@@ -14,9 +14,6 @@ interface RepositoryFilterListProps {
   username: string;
 }
 
-// TODO: tentar usar o setParams e pegar os filtros da url
-// TODO: Adicionar useMemo
-
 export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
   repos,
   username,
