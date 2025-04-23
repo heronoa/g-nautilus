@@ -90,19 +90,19 @@ export const Selector: React.FC<SelectorProps> = ({
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="gradient" className="rounded-[42px]">
-              Abrir Seleção
+              {placeholder}
             </Button>
           </DrawerTrigger>
           <DrawerContent className="inset-0 !mt-0">
             <DrawerTitle>
-              <div className="flex items-center justify-between mx-4">
-                <h2 className="text-xl font-bold ">Selecione as opções</h2>
+              <div className="flex items-center justify-between mx-6">
+                <h2 className="text-2xl font-bold ">{placeholder}</h2>
                 <DrawerClose>
                   <Close />
                 </DrawerClose>
               </div>
             </DrawerTitle>
-            <div className="p-6  ">
+            <div className="px-12 py-[46px]">
               {optionsToDisplay.map((option) => (
                 <label key={option.value} className="block mb-2">
                   <input

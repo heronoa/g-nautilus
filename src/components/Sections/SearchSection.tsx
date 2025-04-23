@@ -102,7 +102,8 @@ export const SearchSection: React.FC = () => {
           <Button
             onClick={handleLoadMore}
             disabled={isFetching}
-            className="cursor-pointer w-full px-12 md:w-fit bg-gradient-to-r from-[#0056A6] to-[#0587FF]"
+            variant="gradient"
+            className="cursor-pointer w-full px-12 md:w-fit"
           >
             {isFetching ? "Carregando..." : "Carregar mais"}
           </Button>

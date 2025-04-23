@@ -109,7 +109,7 @@ export interface IGithubIssue {
   number: number;
   title: string;
   user: IGithubUserProfile;
-  labels: string[]; // Replace `any` with a more specific type if needed
+  labels: string[];
   state: string;
   locked: boolean;
   assignee: IGithubUserProfile | null;

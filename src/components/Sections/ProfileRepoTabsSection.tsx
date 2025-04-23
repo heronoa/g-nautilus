@@ -6,15 +6,17 @@ interface ProfileRepoTabsSectionProps {
   profile: IProfile;
   repos: IPaginationReturn<IRepository>;
   starredRepos: IPaginationReturn<IRepository>;
+  className?: string;
 }
 
 export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
   profile,
   repos,
   starredRepos,
+  className,
 }) => {
   return (
-    <section className="w-full max-w-3xl">
+    <section className={`w-full max-w-3xl ${className}`}>
       <Tabs defaultValue="repositories" className="w-full flex flex-col">
         <TabsList className="flex gap-4 p-2 rounded-md">
           {[

@@ -11,4 +11,5 @@ export { default as InstagramFill } from "./InstagramFill";
 export { default as Loading } from "./Loading";
 export { default as Location } from "./Location";
 export { default as Logo } from "./Logo";
+export { default as Search } from "./Search";
 export { default as StarFilled } from "./StarFilled";
