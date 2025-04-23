@@ -72,7 +72,8 @@ export const SearchSection: React.FC = () => {
             <Loading className="w-full h-full text-black absolute" />
           )}
           <Button
-            className="cursor-pointer w-full px-12 md:w-fit bg-gradient-to-r from-[#0056A6] to-[#0587FF]"
+            className="w-full px-12 md:w-fit"
+            variant="gradient"
             type="submit"
             disabled={fetchLoading}
           >
