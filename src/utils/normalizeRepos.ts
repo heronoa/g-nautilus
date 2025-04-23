@@ -2,6 +2,10 @@ import { IRawRepository, IRepository } from "@/types";
 import { parseDate, isValidUrl } from "./helpers";
 
 export const normalizeRepos = (rawData: IRawRepository[]): IRepository[] => {
+  if (!rawData || !Array.isArray(rawData)) {
+    return [];
+  }
+
   return rawData.map((repo) => ({
     id: repo?.id,
     name: repo?.name || "No Name",

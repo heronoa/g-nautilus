@@ -2,6 +2,10 @@ import { IIssue, IRawIssue } from "@/types/issues";
 import { parseDate, isValidUrl } from "./helpers";
 
 export const normalizeIssue = (rawData: IRawIssue[]): IIssue[] => {
+  if (!rawData || !Array.isArray(rawData)) {
+    return [];
+  }
+
   return rawData.map((issue) => ({
     id: issue?.id,
     title: issue?.title || "No Name",
