@@ -1,7 +1,6 @@
 import { IPaginationReturn, IProfile, IRepository } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
-import { IconsStar, Bookmark } from "@/components";
-import RepositoryFilterList from "../Repository/RepositoryFilterList";
+import { IconsStar, Bookmark, RepositoryFilterList } from "@/components";
 
 interface ProfileRepoTabsSectionProps {
   profile: IProfile;

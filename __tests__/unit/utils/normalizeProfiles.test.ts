@@ -1,4 +1,4 @@
-import { normalizeProfiles } from "../../../src/utils/normalizeProfiles";
+import { normalizeProfiles } from "@/utils";
 import { IGithubUserProfile, IProfile } from "@/types";
 
 describe("normalizeGithubUserProfile function", () => {

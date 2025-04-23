@@ -1,4 +1,3 @@
-import { normalizeRepos } from "@/utils/normalizeRepos";
 import {
   IGithubSearchRepoDTO,
   IGithubSearchUserDTO,
@@ -11,9 +10,8 @@ import {
   IRepository,
 } from "@/types";
 import axiosInstance from "./axiosGithubInstance";
-import { normalizeProfiles } from "@/utils/normalizeProfiles";
+import { normalizeProfiles, normalizeIssue, normalizeRepos } from "@/utils";
 import fetchWithCache from "./fetchCache";
-import { normalizeIssue } from "@/utils/normalizeIssues";
 import { IIssue, IRawIssue } from "@/types/issues";
 
 export const githubService = {

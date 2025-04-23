@@ -7,37 +7,17 @@ import { IPaginationReturn, IRepository } from "@/types";
 import { Selector } from "../ui/Selector";
 import { filterAndSortRepos } from "@/utils/filterRepos";
 import { Input } from "../ui/input";
+import { typeOptions, languageOptions } from "@/utils/constants";
 
 interface RepositoryFilterListProps {
   repos: IPaginationReturn<IRepository>;
   username: string;
 }
 
-const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
+export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
   repos,
   username,
 }: RepositoryFilterListProps) => {
-  const languageOptions: {
-    value: string;
-    label: string;
-  }[] = [
-    { value: "JavaScript", label: "JavaScript" },
-    { value: "Python", label: "Python" },
-    { value: "Java", label: "Java" },
-    { value: "C++", label: "C++" },
-  ];
-
-  const typeOptions: {
-    value: string;
-    label: string;
-  }[] = [
-    { value: "Fork", label: "Fork" },
-    { value: "Mirror", label: "Mirror" },
-    { value: "Source", label: "Source" },
-    { value: "Archived", label: "Archived" },
-    { value: "All", label: "All" },
-  ];
-
   const [selectedLanguages, setSelectedLanguages] = React.useState<
     {
       value: string;
@@ -59,22 +39,26 @@ const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
   );
 
   useEffect(() => {
+    const allIsSelected = selectedTypes.some((type) => type.value === "All");
+
     const filteredRepos = filterAndSortRepos(repos.items, {
-      language: selectedLanguages.map((lang) => lang.value).join(","),
       searchParam: searchParam,
-      onlyForks: selectedTypes.some((type) => type.value === "Fork"),
-      onlyMirrors: selectedTypes.some((type) => type.value === "Mirror"),
-      onlySources: selectedTypes.some((type) => type.value === "Source"),
-      onlyArchived: selectedTypes.some((type) => type.value === "Archived"),
+      language: selectedLanguages.map((lang) => lang.value).join(","),
+      onlyForks: allIsSelected
+        ? false
+        : selectedTypes.some((type) => type.value === "Fork"),
+      onlyMirrors: allIsSelected
+        ? false
+        : selectedTypes.some((type) => type.value === "Mirror"),
+      onlySources: allIsSelected
+        ? false
+        : selectedTypes.some((type) => type.value === "Source"),
+      onlyArchived: allIsSelected
+        ? false
+        : selectedTypes.some((type) => type.value === "Archived"),
     });
 
-    if (selectedTypes.some((type) => type.value === "All")) {
-      setFilteredRepos(repos.items);
-    } else if (selectedTypes.length === 0) {
-      setFilteredRepos(repos.items);
-    } else {
-      setFilteredRepos(filteredRepos);
-    }
+    setFilteredRepos(filteredRepos);
   }, [repos.items, searchParam, selectedLanguages, selectedTypes]);
 
   return (
@@ -101,6 +85,11 @@ const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
         </div>
         <div></div>
       </div>
+      {(selectedLanguages.length > 0 || selectedTypes.length > 0) && (
+        <aside className="flex items-center justify-between mt-4 text-gray-600">
+          results: {filteredRepos.length} of {repos.totalCount}
+        </aside>
+      )}
       <div className="grid gap-4 mt-4 ">
         {filteredRepos.map((repo: IRepository) => (
           <Link
@@ -115,5 +104,3 @@ const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
     </section>
   );
 };
-
-export default RepositoryFilterList;
