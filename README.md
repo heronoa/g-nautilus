@@ -16,7 +16,7 @@ Antes de rodar o projeto, você precisa ter as seguintes dependências instalada
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/github-clone.git
+   git clone https://github.com/heronoa/g-nautilus
    ```
 
 2. Navegue até o diretório do projeto:
