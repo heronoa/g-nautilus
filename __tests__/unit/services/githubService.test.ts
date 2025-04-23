@@ -135,7 +135,9 @@ describe("Github Service - getUserProfile", () => {
       {
         cache: "force-cache",
         headers: {
-          Authorization: `Bearer ${C.githubApiToken}`,
+          ...(C.githubApiToken && {
+            Authorization: `Bearer ${C.githubApiToken}`,
+          }),
           "Content-Type": "application/json",
           "User-Agent": "g-nautilus",
         },
@@ -169,7 +171,9 @@ describe("Github Service - getUserProfile", () => {
       {
         cache: "force-cache",
         headers: {
-          Authorization: `Bearer ${C.githubApiToken}`,
+          ...(C.githubApiToken && {
+            Authorization: `Bearer ${C.githubApiToken}`,
+          }),
           "Content-Type": "application/json",
           "User-Agent": "g-nautilus",
         },
@@ -200,7 +204,9 @@ describe("Github Service - getUserStarredRepos", () => {
       {
         cache: "force-cache",
         headers: {
-          Authorization: `Bearer ${C.githubApiToken}`,
+          ...(C.githubApiToken && {
+            Authorization: `Bearer ${C.githubApiToken}`,
+          }),
           "Content-Type": "application/json",
           "User-Agent": "g-nautilus",
         },
@@ -235,7 +241,9 @@ describe("Github Service - getUserStarredRepos", () => {
       {
         cache: "force-cache",
         headers: {
-          Authorization: `Bearer ${C.githubApiToken}`,
+          ...(C.githubApiToken && {
+            Authorization: `Bearer ${C.githubApiToken}`,
+          }),
           "Content-Type": "application/json",
           "User-Agent": "g-nautilus",
         },
@@ -266,7 +274,9 @@ describe("Github Service - getUserRepos", () => {
       {
         cache: "force-cache",
         headers: {
-          Authorization: `Bearer ${C.githubApiToken}`,
+          ...(C.githubApiToken && {
+            Authorization: `Bearer ${C.githubApiToken}`,
+          }),
           "Content-Type": "application/json",
           "User-Agent": "g-nautilus",
         },
@@ -301,7 +311,9 @@ describe("Github Service - getUserRepos", () => {
       {
         cache: "force-cache",
         headers: {
-          Authorization: `Bearer ${C.githubApiToken}`,
+          ...(C.githubApiToken && {
+            Authorization: `Bearer ${C.githubApiToken}`,
+          }),
           "Content-Type": "application/json",
           "User-Agent": "g-nautilus",
         },
@@ -334,7 +346,9 @@ describe("Github Service - getRepo", () => {
       {
         cache: "force-cache",
         headers: {
-          Authorization: `Bearer ${C.githubApiToken}`,
+          ...(C.githubApiToken && {
+            Authorization: `Bearer ${C.githubApiToken}`,
+          }),
           "Content-Type": "application/json",
           "User-Agent": "g-nautilus",
         },
@@ -422,7 +436,9 @@ describe("Github Service - getIssues", () => {
         {
           cache: "force-cache",
           headers: {
-            Authorization: `Bearer ${C.githubApiToken}`,
+            ...(C.githubApiToken && {
+              Authorization: `Bearer ${C.githubApiToken}`,
+            }),
             "Content-Type": "application/json",
             "User-Agent": "g-nautilus",
           },
@@ -459,7 +475,9 @@ describe("Github Service - getIssues", () => {
         {
           cache: "force-cache",
           headers: {
-            Authorization: `Bearer ${C.githubApiToken}`,
+            ...(C.githubApiToken && {
+              Authorization: `Bearer ${C.githubApiToken}`,
+            }),
             "Content-Type": "application/json",
             "User-Agent": "g-nautilus",
           },

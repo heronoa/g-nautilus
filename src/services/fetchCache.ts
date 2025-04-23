@@ -18,7 +18,9 @@ async function fetchWithCache<T = unknown>(
       redirect: "follow",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${C.githubApiToken}`,
+        ...(C.githubApiToken && {
+          Authorization: `Bearer ${C.githubApiToken}`,
+        }),
         "User-Agent": "g-nautilus",
       },
     });
