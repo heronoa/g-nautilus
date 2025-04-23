@@ -15,7 +15,7 @@ export const RepositoryFrame: React.FC<RepositoryFrameProps> = ({
   issues,
 }: RepositoryFrameProps) => {
   return (
-    <div className="flex flex-col justify-center items-center mx-auto px-4 py-8">
+    <main className="flex flex-col justify-center items-center mx-auto px-4 py-8 max-w-3xl  p-4 relative">
       <HomeHeadingSection headTitle={false} back />
       <RepositoryDetailsSection repository={repository} />
       <RepositoryStatsSection
@@ -35,6 +35,6 @@ export const RepositoryFrame: React.FC<RepositoryFrameProps> = ({
           </div>
         ))}
       </section>
-    </div>
+    </main>
   );
 };

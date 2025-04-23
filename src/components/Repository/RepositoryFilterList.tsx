@@ -80,7 +80,7 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
           <Input
             icon={<Search color="#989898" />}
             placeholder="Search Here"
-            className="border-0 border-b-2 rounded-none border-gray-300 focus:border-gray-500 focus:ring-0"
+            className="border-0 border-b-2 rounded-none border-[#F4F4F4] focus:border-gray-500 focus:ring-0"
             value={searchParam}
             onChange={(e) => setSearchParam(e.target.value)}
           />
@@ -94,7 +94,7 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
           >
             <Input
               placeholder="Search Here"
-              className="border-0 border-b-2 rounded-none border-gray-300 focus:border-gray-500 not-focus-within:cursor-pointer not-focus:cursor-pointer not-focus-visible:cursor-pointer focus:ring-0"
+              className="border-0 border-b-2 rounded-none border-[#F4F4F4] focus:border-gray-500 not-focus-within:cursor-pointer not-focus:cursor-pointer not-focus-visible:cursor-pointer focus:ring-0"
               value={searchParam}
               onChange={(e) => setSearchParam(e.target.value)}
             />
