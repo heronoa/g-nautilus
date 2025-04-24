@@ -1,6 +1,7 @@
 import { RepositoryCard } from "@/components";
 import Link from "next/link";
 import { IRepository } from "@/types";
+import { AnimatedCardWrapper } from "../Animation";
 
 interface RepositoryListProps {
   filteredRepos: IRepository[];
@@ -14,13 +15,15 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
   return (
     <div className="grid gap-4 mt-4">
       {filteredRepos.map((repo) => (
-        <Link
-          key={repo.id}
-          href={`/profile/${username}/${repo.name}`}
-          className="cursor-pointer"
-        >
-          <RepositoryCard repository={repo} />
-        </Link>
+        <AnimatedCardWrapper key={repo.id} className="flex flex-col gap-4">
+          <Link
+            key={repo.id}
+            href={`/profile/${username}/${repo.name}`}
+            className="cursor-pointer"
+          >
+            <RepositoryCard repository={repo} />
+          </Link>
+        </AnimatedCardWrapper>
       ))}
     </div>
   );
