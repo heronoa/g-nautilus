@@ -11,7 +11,6 @@ interface RepositoryListProps {
 
 const RepositoryList: React.FC<RepositoryListProps> = ({
   filteredRepos,
-  username,
 }) => {
   return (
     <div className="grid gap-4 mt-4">
@@ -19,7 +18,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
         <AnimatedCardWrapper key={repo.id} className="flex flex-col gap-4">
           <Link
             key={repo.id}
-            href={`/profile/${username}/${repo.name}`}
+            href={`/profile/${repo.owner.login}/${repo.name}`}
             className="cursor-pointer"
           >
             <RepositoryCard repository={repo} />
