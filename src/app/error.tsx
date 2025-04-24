@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrorFrame } from "@/components/Frames/ErrorFrame";
+import { ErrorFrame } from "@/components";
 import { C } from "@/utils";
 
 export default function GlobalError({ error }: { error: Error }) {

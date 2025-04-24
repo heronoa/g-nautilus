@@ -1,4 +1,4 @@
-import { RepositoryFrame } from "@/components/Frames/RepositoryFrame";
+import { RepositoryFrame } from "@/components";
 import { githubService } from "@/services/githubService";
 
 interface ProfilePageProps {
