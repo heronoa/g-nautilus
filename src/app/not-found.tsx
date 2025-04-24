@@ -1,4 +1,4 @@
-import { ErrorFrame } from "@/components/Frames/ErrorFrame";
+import { ErrorFrame } from "@/components";
 
 const NotFoundPage = () => {
   return (
