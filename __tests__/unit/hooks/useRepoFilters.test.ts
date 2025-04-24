@@ -7,7 +7,6 @@ import { mockRepos } from "@/tests/mocks";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 jest.mock('lodash/debounce', () => jest.fn((fn) => fn));
-
 jest.mock("@/utils/filterRepos", () => ({
   filterAndSortRepos: jest.fn(),
 }));

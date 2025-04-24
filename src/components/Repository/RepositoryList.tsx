@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IRepository } from "@/types";
 import { AnimatedCardWrapper } from "../Animation";
 
+
 interface RepositoryListProps {
   filteredRepos: IRepository[];
   username: string;

@@ -54,7 +54,6 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
             </TabsTrigger>
           ))}
         </TabsList>
-
         {[
           {
             value: "repositories",
