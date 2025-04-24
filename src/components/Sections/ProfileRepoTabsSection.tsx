@@ -54,44 +54,39 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
             </TabsTrigger>
           ))}
         </TabsList>
-
-        <TabsContent value="repositories">
-          <div className="grid gap-4 mt-4">
-            {repos.items.length <= 0 && (
-              <div className="flex flex-col items-center justify-center p-4 bg-white rounded-md shadow-md">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  Nenhum repositório encontrado
-                </h2>
-                <p className="text-gray-500">
-                  {profile.login} não tem repositórios.
-                </p>
-              </div>
-            )}
-            {repos.items.length > 0 && (
-              <RepositorySearchSection repos={repos} username={profile.login} />
-            )}
-          </div>
-        </TabsContent>
-        <TabsContent value="starred">
-          <div className="grid gap-4 mt-4">
-            {starredRepos.items.length <= 0 && (
-              <div className="flex flex-col items-center justify-center p-4 bg-white rounded-md ">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  Nenhum repositório com estrela encontrado
-                </h2>
-                <p className="text-gray-500">
-                  {profile.login} não tem repositórios com estrela.
-                </p>
-              </div>
-            )}
-            {starredRepos.items.length > 0 && (
-              <RepositorySearchSection
-                repos={starredRepos}
-                username={profile.login}
-              />
-            )}
-          </div>
-        </TabsContent>
+        {[
+          {
+            value: "repositories",
+            displayRepo: repos,
+            emptyMessage: "Nenhum repositório encontrado",
+            emptyDescription: `${profile.login} não tem repositórios.`,
+          },
+          {
+            value: "starred",
+            displayRepo: starredRepos,
+            emptyMessage: "Nenhum repositório com estrela encontrado",
+            emptyDescription: `${profile.login} não tem repositórios com estrela.`,
+          },
+        ].map((tab) => (
+          <TabsContent key={tab.value} value={tab.value}>
+            <div className="grid gap-4 mt-4">
+              {tab.displayRepo.items.length <= 0 && (
+                <div className="flex flex-col items-center justify-center p-4 bg-white rounded-md shadow-md">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    {tab.emptyMessage}
+                  </h2>
+                  <p className="text-gray-500">{tab.emptyDescription}</p>
+                </div>
+              )}
+              {tab.displayRepo.items.length > 0 && (
+                <RepositorySearchSection
+                  repos={tab.displayRepo}
+                  username={profile.login}
+                />
+              )}
+            </div>
+          </TabsContent>
+        ))}
       </Tabs>
     </section>
   );

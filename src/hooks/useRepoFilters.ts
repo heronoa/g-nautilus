@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 import { filterAndSortRepos } from "@/utils/filterRepos";
 import { IPaginationReturn, IRepository } from "@/types";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";

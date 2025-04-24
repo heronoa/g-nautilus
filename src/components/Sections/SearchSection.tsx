@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import {
+  Input,
+  Button,
+  ProfileList,
+  LoadMoreButton,
+  Loading,
+} from "@/components";
 import { useProfileSearch } from "@/hooks/useProfileSearch";
-import { Loading } from "../icons";
 import { IProfile } from "@/types";
-import ProfileCard from "../Profile/ProfileCard";
 import { useSearchStore } from "@/store/SearchState";
 
 export const SearchSection: React.FC = () => {
   const { searchInput, page, perPage, query, setSearchInput, submitQuery } =
     useSearchStore();
-
   const [profiles, setProfiles] = useState<IProfile[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [hasSearched, setHasSearched] = useState<boolean>(false);
@@ -30,28 +32,15 @@ export const SearchSection: React.FC = () => {
     setHasSearched(false);
   };
 
-  const handleLoadMore = () => {
-    if (!isFetching) {
-      useSearchStore.setState((state) => ({
-        page: state.page + 1,
-      }));
-    }
-  };
-
   useEffect(() => {
     if (data) {
       setTotalCount(data.totalCount);
       setProfiles((prev) =>
         page === 1 ? data.items : [...prev, ...data.items]
       );
-      if (page === 1) {
-        setHasSearched(true);
-      }
+      if (page === 1) setHasSearched(true);
     }
   }, [data, page]);
-
-  const showLoadMoreButton =
-    hasSearched && !isLoading && !isFetching && profiles.length < totalCount;
 
   const fetchLoading = isLoading || isFetching;
 
@@ -85,30 +74,17 @@ export const SearchSection: React.FC = () => {
       {isLoading && <p className="text-muted-foreground">Carregando...</p>}
       {error && <p className="text-red-500">Erro: {error.message}</p>}
 
-      {!isLoading && profiles.length > 0 && (
-        <section className="space-y-4">
-          {profiles.map((profile: IProfile, index: number) => (
-            <ProfileCard key={index} profile={profile} />
-          ))}
-        </section>
-      )}
-
-      {!isLoading && hasSearched && profiles.length === 0 && (
-        <p className="text-muted-foreground">Nenhum usuário encontrado.</p>
-      )}
-
-      {showLoadMoreButton && (
-        <div className="flex justify-center mt-6">
-          <Button
-            onClick={handleLoadMore}
-            disabled={isFetching}
-            variant="gradient"
-            className="cursor-pointer w-full px-12 md:w-fit"
-          >
-            {isFetching ? "Carregando..." : "Carregar mais"}
-          </Button>
-        </div>
-      )}
+      <ProfileList
+        profiles={profiles}
+        isLoading={isLoading}
+        hasSearched={hasSearched}
+      />
+      <LoadMoreButton
+        profilesLength={profiles.length}
+        totalCount={totalCount}
+        isFetching={isFetching}
+        hasSearched={hasSearched}
+      />
     </section>
   );
 };
