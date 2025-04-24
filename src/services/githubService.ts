@@ -72,7 +72,7 @@ export const githubService = {
 
       return normalizeProfile;
     } catch (error) {
-      console.error(error);
+      console.log("Github Service - userProfile error", error);
       throw error;
     }
   },
@@ -99,6 +99,7 @@ export const githubService = {
 
       return normalizedStarredRepos;
     } catch (error) {
+      console.log("Github Service - getUserStarredRepos error", error);
       throw error;
     }
   },
@@ -111,6 +112,7 @@ export const githubService = {
       const normalizedRepo: IRepository = normalizeRepos([repo])[0];
       return normalizedRepo;
     } catch (error) {
+      console.log("Github Service - getRepo error", error);
       throw error;
     }
   },
@@ -135,6 +137,7 @@ export const githubService = {
       const normalizedIssues: IIssue[] = normalizeIssue(issues);
       return normalizedIssues;
     } catch (error) {
+      console.log("Github Service - getIssues error", error);
       throw error;
     }
   },
@@ -166,38 +169,44 @@ export const githubService = {
   async getAllUserRepos(
     username: string
   ): Promise<IPaginationReturn<IRepository>> {
-    const allRepos: IRepository[] = [];
-    let page = 1;
-    const perPage = 30;
+    try {
+      const maxPage = 4;
+      const allRepos: IRepository[] = [];
+      let page = 1;
+      const perPage = 30;
 
-    while (true) {
-      const paginatedRepos = await this.getUserRepos(username, {
-        page,
-        perPage,
-      });
+      while (true) {
+        const paginatedRepos = await this.getUserRepos(username, {
+          page,
+          perPage,
+        });
 
-      allRepos.push(...paginatedRepos);
+        allRepos.push(...paginatedRepos);
 
-      if (paginatedRepos.length < perPage) break;
+        if (paginatedRepos.length < perPage || page === maxPage) break;
+        page++;
+      }
 
-      page++;
+      const paginatedReturn = allRepos.reduce(
+        (acc: IPaginationReturn<IRepository>, repo: IRepository) => {
+          acc.items.push(repo);
+          acc.totalCount += 1;
+          return acc;
+        },
+        { items: [], totalCount: 0 }
+      );
+
+      return paginatedReturn;
+    } catch (error) {
+      console.error("Github Service - getAllUserRepos error", error);
+      throw error;
     }
-
-    const paginatedReturn = allRepos.reduce(
-      (acc: IPaginationReturn<IRepository>, repo: IRepository) => {
-        acc.items.push(repo);
-        acc.totalCount += 1;
-        return acc;
-      },
-      { items: [], totalCount: 0 }
-    );
-
-    return paginatedReturn;
   },
 
   async getAllUserStarredRepos(
     username: string
   ): Promise<IPaginationReturn<IRepository>> {
+    const maxPage = 4;
     const allStarredRepos: IRepository[] = [];
     let page = 1;
     const perPage = 30;
@@ -207,7 +216,7 @@ export const githubService = {
         perPage,
       });
       allStarredRepos.push(...paginatedStarredRepos);
-      if (paginatedStarredRepos.length < perPage) break;
+      if (paginatedStarredRepos.length < perPage || page === maxPage) break;
       page++;
     }
 
@@ -227,6 +236,7 @@ export const githubService = {
     username: string,
     repoName: string
   ): Promise<IPaginationReturn<IIssue>> {
+    const maxPage = 4;
     const allIssues: IIssue[] = [];
     let page = 1;
     const perPage = 30;
@@ -239,7 +249,7 @@ export const githubService = {
 
       allIssues.push(...paginatedIssues);
 
-      if (paginatedIssues.length < perPage) break;
+      if (paginatedIssues.length < perPage || page === maxPage) break;
 
       page++;
     }
