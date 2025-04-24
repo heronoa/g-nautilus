@@ -8,6 +8,7 @@ import { Loading } from "../icons";
 import { IProfile } from "@/types";
 import ProfileCard from "../Profile/ProfileCard";
 import { useSearchStore } from "@/store/SearchState";
+import { AnimatedCardWrapper } from "../Animation";
 
 export const SearchSection: React.FC = () => {
   const { searchInput, page, perPage, query, setSearchInput, submitQuery } =
@@ -87,8 +88,13 @@ export const SearchSection: React.FC = () => {
 
       {!isLoading && profiles.length > 0 && (
         <section className="space-y-4">
-          {profiles.map((profile: IProfile, index: number) => (
-            <ProfileCard key={index} profile={profile} />
+          {profiles.map((profile: IProfile) => (
+            <AnimatedCardWrapper
+              key={profile.id}
+              className="flex flex-col gap-4"
+            >
+              <ProfileCard profile={profile} />
+            </AnimatedCardWrapper>
           ))}
         </section>
       )}
