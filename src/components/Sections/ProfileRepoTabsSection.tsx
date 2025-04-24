@@ -1,6 +1,7 @@
 import { IPaginationReturn, IProfile, IRepository } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
-import { IconsStar, Bookmark, RepositoryFilterList } from "@/components";
+import { IconsStar, Bookmark } from "@/components";
+import { RepositorySearchSection } from "@/components/Repository/RepositorySearchSection";
 
 interface ProfileRepoTabsSectionProps {
   profile: IProfile;
@@ -68,7 +69,7 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
               </div>
             )}
             {repos.items.length > 0 && (
-              <RepositoryFilterList repos={repos} username={profile.login} />
+              <RepositorySearchSection repos={repos} username={profile.login} />
             )}
           </div>
         </TabsContent>
@@ -85,7 +86,7 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
               </div>
             )}
             {starredRepos.items.length > 0 && (
-              <RepositoryFilterList
+              <RepositorySearchSection
                 repos={starredRepos}
                 username={profile.login}
               />
