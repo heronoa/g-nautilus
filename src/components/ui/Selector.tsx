@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Drawer,
   DrawerTrigger,
@@ -25,102 +25,107 @@ interface SelectorProps {
   options: IDisplayOption[];
   onChange: (value: string) => void;
 }
+
+const OptionList = ({
+  options,
+  selected,
+  toggleOption,
+}: {
+  options: IDisplayOption[];
+  selected: IDisplayOption[];
+  toggleOption: (value: string) => void;
+}) => (
+  <>
+    {options.map((option) => (
+      <label key={option.value} className="block mb-2">
+        <input
+          type="checkbox"
+          checked={selected.some((s) => s.value === option.value)}
+          onChange={() => toggleOption(option.value)}
+          className="mr-2"
+        />
+        {option.label}
+      </label>
+    ))}
+  </>
+);
+
 export const Selector: React.FC<SelectorProps> = ({
   options,
   placeholder,
   onChange,
 }) => {
-  const optionsToDisplay: IDisplayOption[] = [
-    { value: "All", label: "All" },
-    ...options,
-  ];
+  const optionsToDisplay = useMemo(
+    () => [{ value: "All", label: "All" }, ...options],
+    [options]
+  );
 
-  const [selectedOptions, setSelectedOptions] = useState<
-    {
-      value: string;
-      label: string;
-    }[]
-  >([]);
+  const [selectedOptions, setSelectedOptions] = useState<IDisplayOption[]>([]);
   const [open, setOpen] = useState(false);
 
-  const toggleOption = (option: string) => {
-    if (option === "All") {
-      const newSelection =
-        selectedOptions.length === optionsToDisplay.length
-          ? []
-          : optionsToDisplay;
-
+  const toggleOption = (value: string) => {
+    if (value === "All") {
+      const allSelected = selectedOptions.length === options.length;
+      const newSelection = allSelected ? [] : options;
       setSelectedOptions(newSelection);
-
       onChange("");
       return;
     }
 
-    const isSelected = selectedOptions.some((op) => op.value === option);
+    const isSelected = selectedOptions.some((opt) => opt.value === value);
     const newValue = isSelected
-      ? selectedOptions.filter((item) => item.value !== option)
-      : [...selectedOptions, options.find((opt) => opt.value === option)!];
+      ? selectedOptions.filter((opt) => opt.value !== value)
+      : [...selectedOptions, options.find((opt) => opt.value === value)!];
 
     setSelectedOptions(newValue);
-
     onChange(newValue.map((opt) => opt.value).join(","));
   };
 
+  const selectedLabel =
+    selectedOptions.length > 0
+      ? `${selectedOptions.length} selecionado(s)`
+      : placeholder;
+
   return (
     <div>
+      {/* Mobile (Drawer) */}
       <div className="md:hidden">
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="gradient" className="rounded-[42px]">
-              <ChevronDown2 />{" "}
-              <span className="truncate">
-                {selectedOptions.length > 0
-                  ? `${selectedOptions.length} selecionado(s)`
-                  : placeholder}
-              </span>
+              <ChevronDown2 /> <span className="truncate">{selectedLabel}</span>
             </Button>
           </DrawerTrigger>
           <DrawerContent className="inset-0 !mt-0">
             <DrawerTitle>
               <div className="flex items-center justify-between mx-6">
-                <h2 className="text-2xl font-bold ">{placeholder}</h2>
+                <h2 className="text-2xl font-bold">{placeholder}</h2>
                 <DrawerClose>
                   <Close />
                 </DrawerClose>
               </div>
             </DrawerTitle>
             <div className="px-12 py-[46px]">
-              {optionsToDisplay.map((option) => (
-                <label key={option.value} className="block mb-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedOptions.some(
-                      (selected) => selected.value === option.value
-                    )}
-                    onChange={() => toggleOption(option.value)}
-                    className="mr-2"
-                  />
-                  {option.label}
-                </label>
-              ))}
+              <OptionList
+                options={optionsToDisplay}
+                selected={selectedOptions}
+                toggleOption={toggleOption}
+              />
             </div>
           </DrawerContent>
         </Drawer>
       </div>
 
+      {/* Desktop (Dropdown) */}
       <div className="hidden md:block">
-        <DropdownMenu open={open} onOpenChange={setOpen} defaultOpen={false}>
+        <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="gradient" className="rounded-[42px] max-w-34">
               <ChevronDown2 />
-              <span className="truncate">
-                {selectedOptions.length > 0
-                  ? `${selectedOptions.length} selecionado(s)`
-                  : placeholder}
-              </span>
+              <span className="truncate">{selectedLabel}</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-34 fade-in text-white rounded-sm my-1 px-2 py-1 overflow-y-auto transition-all duration-200 bg-gradient-to-r from-[#0056A6] to-[#0587FF]">
+          <DropdownMenuContent className="w-34 z-50 fade-in text-white rounded-sm my-1 px-2 py-1 overflow-y-auto transition-all duration-200 bg-gradient-to-r from-[#0056A6] to-[#0587FF]">
             <DropdownMenuLabel>Opções</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {optionsToDisplay.map((option) => (
@@ -131,7 +136,7 @@ export const Selector: React.FC<SelectorProps> = ({
                 )}
                 onSelect={(evt) => evt.preventDefault()}
               >
-                <label key={option.value} className="block mb-2">
+                <label className="block mb-2">
                   <input
                     type="checkbox"
                     checked={selectedOptions.some(
