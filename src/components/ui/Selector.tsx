@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import {
   Drawer,
   DrawerTrigger,
@@ -23,14 +23,7 @@ import { IDisplayOption } from "@/types";
 interface SelectorProps {
   placeholder: string;
   options: IDisplayOption[];
-  onChange: Dispatch<
-    SetStateAction<
-      {
-        value: string;
-        label: string;
-      }[]
-    >
-  >;
+  onChange: (value: string) => void;
 }
 export const Selector: React.FC<SelectorProps> = ({
   options,
@@ -52,36 +45,25 @@ export const Selector: React.FC<SelectorProps> = ({
 
   const toggleOption = (option: string) => {
     if (option === "All") {
-      setSelectedOptions((prev) => {
-        if (prev.length === optionsToDisplay.length) {
-          return [];
-        }
-        return optionsToDisplay;
-      });
-      onChange((prev) => {
-        if (prev.length === optionsToDisplay.length) {
-          return [];
-        }
-        return optionsToDisplay;
-      });
+      const newSelection =
+        selectedOptions.length === optionsToDisplay.length
+          ? []
+          : optionsToDisplay;
+
+      setSelectedOptions(newSelection);
+
+      onChange("");
       return;
     }
 
-    setSelectedOptions((prev) =>
-      prev.some((op) => op.value === option)
-        ? prev.filter((item) => item.value !== option)
-        : [...prev, options.find((opt) => opt.value === option)!]
-    );
+    const isSelected = selectedOptions.some((op) => op.value === option);
+    const newValue = isSelected
+      ? selectedOptions.filter((item) => item.value !== option)
+      : [...selectedOptions, options.find((opt) => opt.value === option)!];
 
-    onChange((prev) => {
-      const selectedOption = options.find((opt) => opt.value === option);
-      if (selectedOption) {
-        return prev.some((op) => op.value === option)
-          ? prev.filter((item) => item.value !== option)
-          : [...prev, options.find((opt) => opt.value === option)!];
-      }
-      return prev;
-    });
+    setSelectedOptions(newValue);
+
+    onChange(newValue.map((opt) => opt.value).join(","));
   };
 
   return (

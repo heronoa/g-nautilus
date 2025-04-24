@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { RepositoryCard, Search } from "@/components";
 import { IPaginationReturn, IRepository } from "@/types";
@@ -8,6 +8,9 @@ import { Selector } from "../ui/Selector";
 import { filterAndSortRepos } from "@/utils/filterRepos";
 import { Input } from "../ui/input";
 import { typeOptions, languageOptions } from "@/utils/constants";
+import { useRouter } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { debounce } from "lodash";
 
 interface RepositoryFilterListProps {
   repos: IPaginationReturn<IRepository>;
@@ -18,31 +21,47 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
   repos,
   username,
 }: RepositoryFilterListProps) => {
-  const [selectedLanguages, setSelectedLanguages] = React.useState<
-    {
-      value: string;
-      label: string;
-    }[]
-  >([]);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const [selectedTypes, setSelectedTypes] = React.useState<
-    {
-      value: string;
-      label: string;
-    }[]
-  >([]);
+  const searchParam = searchParams?.get("searchParam") || "";
 
-  const [searchParam, setSearchParam] = React.useState<string>("");
+  const [searchValue, setSearchValue] = useState("");
 
-  const [filteredRepos, setFilteredRepos] = React.useState<IRepository[]>(
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
+
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    handleChange(event);
+    updateSearchParams({ param: "searchParam", value });
+  };
+
+  const selectedLanguages = useMemo(() => {
+    const langs = searchParams?.get("languages")?.split(",") || [];
+    return langs
+      .filter((lang) => lang.trim() !== "")
+      .map((lang) => ({ value: lang, label: lang }));
+  }, [searchParams]);
+
+  const selectedTypes = useMemo(() => {
+    const types = searchParams?.get("types")?.split(",") || [];
+    return types
+      .filter((type) => type.trim() !== "")
+      .map((type) => ({ value: type, label: type }));
+  }, [searchParams]);
+
+  const [filteredRepos, setFilteredRepos] = useState<IRepository[]>(
     repos.items
   );
 
   useEffect(() => {
     const allIsSelected = selectedTypes.some((type) => type.value === "All");
 
-    const filteredRepos = filterAndSortRepos(repos.items, {
-      searchParam: searchParam,
+    const filtered = filterAndSortRepos(repos.items, {
+      searchParam,
       language: selectedLanguages.map((lang) => lang.value).join(","),
       onlyForks: allIsSelected
         ? false
@@ -58,8 +77,26 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
         : selectedTypes.some((type) => type.value === "Archived"),
     });
 
-    setFilteredRepos(filteredRepos);
+    setFilteredRepos(filtered);
   }, [repos.items, searchParam, selectedLanguages, selectedTypes]);
+
+  const debouncedUpdateSearchParams = useMemo(
+    () =>
+      debounce(({ param, value }: { param: string; value: string }) => {
+        const newParams = new URLSearchParams(searchParams.toString());
+        newParams.set(param, value);
+
+        router.replace(`${pathname}?${newParams.toString()}`);
+      }, 300),
+    [searchParams, pathname, router]
+  );
+
+  const updateSearchParams = useCallback(
+    ({ param, value }: { param: string; value: string }) => {
+      debouncedUpdateSearchParams({ param, value });
+    },
+    [debouncedUpdateSearchParams]
+  );
 
   return (
     <section>
@@ -68,12 +105,16 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
           <Selector
             placeholder="Type"
             options={typeOptions}
-            onChange={setSelectedTypes}
+            onChange={(value: string) =>
+              updateSearchParams({ param: "types", value })
+            }
           />
           <Selector
             placeholder="Language"
             options={languageOptions}
-            onChange={setSelectedLanguages}
+            onChange={(value: string) =>
+              updateSearchParams({ param: "languages", value })
+            }
           />
         </div>
         <div className="hidden md:block">
@@ -81,8 +122,8 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
             icon={<Search color="#989898" />}
             placeholder="Search Here"
             className="border-0 border-b-2 rounded-none border-[#F4F4F4] focus:border-gray-500 focus:ring-0"
-            value={searchParam}
-            onChange={(e) => setSearchParam(e.target.value)}
+            value={searchValue}
+            onChange={(e) => onSearchChange(e)}
           />
         </div>
         <div className="flex justify-center items-center md:hidden cursor-pointer relative group  ">
@@ -96,7 +137,12 @@ export const RepositoryFilterList: React.FC<RepositoryFilterListProps> = ({
               placeholder="Search Here"
               className="border-0 border-b-2 rounded-none border-[#F4F4F4] focus:border-gray-500 not-focus-within:cursor-pointer not-focus:cursor-pointer not-focus-visible:cursor-pointer focus:ring-0"
               value={searchParam}
-              onChange={(e) => setSearchParam(e.target.value)}
+              onChange={(e) =>
+                updateSearchParams({
+                  param: "searchParam",
+                  value: e.target.value.trim(),
+                })
+              }
             />
           </div>
         </div>
