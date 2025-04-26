@@ -5,11 +5,13 @@ interface ProfileFrameProps {
   profile: IProfile;
   repos: IPaginationReturn<IRepository>;
   starredRepos: IPaginationReturn<IRepository>;
+  totalCountRepos: number;
 }
 export const ProfileFrame: React.FC<ProfileFrameProps> = ({
   profile,
   repos,
   starredRepos,
+  totalCountRepos,
 }: ProfileFrameProps) => {
   return (
     <main className="flex flex-col justify-center md:items-start items-center mx-auto px-4 py-8 md:grid grid-cols-3 gap-4 w-full lg:max-w-5xl ">
@@ -19,6 +21,7 @@ export const ProfileFrame: React.FC<ProfileFrameProps> = ({
         profile={profile}
         repos={repos}
         starredRepos={starredRepos}
+        totalCountRepos={totalCountRepos}
         className="col-span-2 w-full max-w-3xl"
       />
     </main>

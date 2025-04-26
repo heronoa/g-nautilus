@@ -25,6 +25,8 @@ describe("normalizeRepos function", () => {
       expect(repo).toHaveProperty("pushedAt");
       expect(repo).toHaveProperty("createdAt");
       expect(repo).toHaveProperty("mirrorUrl");
+      expect(repo).toHaveProperty("forkCount");
+      expect(repo).toHaveProperty("htmlUrl");
     });
   });
 
