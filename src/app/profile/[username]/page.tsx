@@ -19,6 +19,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   }
 
   return (
-    <ProfileFrame profile={profile} repos={repos} starredRepos={starredRepos} />
+    <ProfileFrame
+      profile={profile}
+      repos={repos}
+      starredRepos={starredRepos}
+      totalCountRepos={profile.publicRepos}
+    />
   );
 }

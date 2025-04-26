@@ -6,6 +6,7 @@ interface ProfileRepoTabsSectionProps {
   profile: IProfile;
   repos: IPaginationReturn<IRepository>;
   starredRepos: IPaginationReturn<IRepository>;
+  totalCountRepos: number;
   className?: string;
 }
 
@@ -14,6 +15,7 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
   repos,
   starredRepos,
   className,
+  totalCountRepos,
 }) => {
   return (
     <section className={`w-full max-w-3xl ${className}`}>
@@ -24,7 +26,7 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
               value: "repositories",
               icon: <Bookmark />,
               label: "Repositórios",
-              count: repos.totalCount,
+              count: totalCountRepos || repos.totalCount,
             },
             {
               value: "starred",
@@ -41,7 +43,7 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
               <div className="flex items-center gap-2">
                 {tab.icon} {tab.label}
                 <span className="w-10 h-6 rounded-full border solid bg-[#F8F8F8] border-gray-[#DBDBDB]">
-                  {tab.count}
+                  {tab.count || 0}
                 </span>
               </div>
               {tab.value === "repositories" && (
@@ -58,6 +60,7 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
           {
             value: "repositories",
             displayRepo: repos,
+            totalCountRepos: totalCountRepos,
             emptyMessage: "Nenhum repositório encontrado",
             emptyDescription: `${profile.login} não tem repositórios.`,
           },
@@ -82,6 +85,8 @@ export const ProfileRepoTabsSection: React.FC<ProfileRepoTabsSectionProps> = ({
                 <RepositorySearchSection
                   repos={tab.displayRepo}
                   username={profile.login}
+                  starred={tab.value === "starred"}
+                  totalCount={totalCountRepos || tab.displayRepo.totalCount}
                 />
               )}
             </div>

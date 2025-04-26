@@ -14,7 +14,7 @@ export const ProfileList: React.FC<Props> = ({
   hasSearched,
 }) => {
   if (!isLoading && hasSearched && profiles.length === 0) {
-    return <p className="text-muted-foreground">Nenhum usuário encontrado.</p>;
+    return <p className="text-template-gray">Nenhum usuário encontrado.</p>;
   }
 
   if (!isLoading && profiles.length > 0) {

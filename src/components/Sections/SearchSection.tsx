@@ -32,6 +32,12 @@ export const SearchSection: React.FC = () => {
     setHasSearched(false);
   };
 
+  const handleLoadMore = () => {
+    if (!isFetching) {
+      useSearchStore.setState((state) => ({ page: state.page + 1 }));
+    }
+  };
+
   useEffect(() => {
     if (data) {
       setTotalCount(data.totalCount);
@@ -80,10 +86,11 @@ export const SearchSection: React.FC = () => {
         hasSearched={hasSearched}
       />
       <LoadMoreButton
-        profilesLength={profiles.length}
+        itemsLength={profiles.length}
         totalCount={totalCount}
         isFetching={isFetching}
         hasSearched={hasSearched}
+        handleLoadMore={handleLoadMore}
       />
     </section>
   );

@@ -10,7 +10,12 @@ import {
   IRepository,
 } from "@/types";
 import axiosInstance from "./axiosGithubInstance";
-import { normalizeProfiles, normalizeIssue, normalizeRepos } from "@/utils";
+import {
+  normalizeProfiles,
+  normalizeIssue,
+  normalizeRepos,
+  MAX_PAGE_FETCH_ALL,
+} from "@/utils";
 import fetchWithCache from "./fetchCache";
 import { IIssue, IRawIssue } from "@/types/issues";
 
@@ -54,6 +59,8 @@ export const githubService = {
       const response = await axiosInstance.get(url);
       const rawData: IGithubSearchUserDTO = await response.data;
       const users: IProfile[] = normalizeProfiles(rawData.items);
+
+
       return { items: users, totalCount: rawData.total_count };
     } catch (error: unknown) {
       throw error;
@@ -170,7 +177,6 @@ export const githubService = {
     username: string
   ): Promise<IPaginationReturn<IRepository>> {
     try {
-      const maxPage = 4;
       const allRepos: IRepository[] = [];
       let page = 1;
       const perPage = 30;
@@ -179,11 +185,14 @@ export const githubService = {
         const paginatedRepos = await this.getUserRepos(username, {
           page,
           perPage,
+          sort: "creation",
+          direction: "desc",
         });
 
         allRepos.push(...paginatedRepos);
 
-        if (paginatedRepos.length < perPage || page === maxPage) break;
+        if (paginatedRepos.length < perPage || page === MAX_PAGE_FETCH_ALL)
+          break;
         page++;
       }
 
@@ -206,7 +215,6 @@ export const githubService = {
   async getAllUserStarredRepos(
     username: string
   ): Promise<IPaginationReturn<IRepository>> {
-    const maxPage = 4;
     const allStarredRepos: IRepository[] = [];
     let page = 1;
     const perPage = 30;
@@ -214,9 +222,12 @@ export const githubService = {
       const paginatedStarredRepos = await this.getUserStarredRepos(username, {
         page,
         perPage,
+        sort: "creation",
+        direction: "desc",
       });
       allStarredRepos.push(...paginatedStarredRepos);
-      if (paginatedStarredRepos.length < perPage || page === maxPage) break;
+      if (paginatedStarredRepos.length < perPage || page === MAX_PAGE_FETCH_ALL)
+        break;
       page++;
     }
 
@@ -236,7 +247,6 @@ export const githubService = {
     username: string,
     repoName: string
   ): Promise<IPaginationReturn<IIssue>> {
-    const maxPage = 4;
     const allIssues: IIssue[] = [];
     let page = 1;
     const perPage = 30;
@@ -245,11 +255,14 @@ export const githubService = {
       const paginatedIssues = await this.getIssues(username, repoName, {
         page,
         perPage,
+        sort: "creation",
+        direction: "desc",
       });
 
       allIssues.push(...paginatedIssues);
 
-      if (paginatedIssues.length < perPage || page === maxPage) break;
+      if (paginatedIssues.length < perPage || page === MAX_PAGE_FETCH_ALL)
+        break;
 
       page++;
     }

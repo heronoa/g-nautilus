@@ -16,6 +16,8 @@ interface IUseFilterReturn {
   updateSearchParams: ({ param, value }: IUpdateSearchParams) => void;
   selectedLanguages: { value: string; label: string }[];
   selectedTypes: { value: string; label: string }[];
+  totalPublicRepos: number;
+  setTotalPublicRepos: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const useFilter = (
@@ -26,6 +28,7 @@ export const useFilter = (
 ): IUseFilterReturn => {
   const searchParam: string = searchParams?.get("searchParam") || "";
   const [searchValue, setSearchValue] = useState<string>(searchParam);
+  const [totalPublicRepos, setTotalPublicRepos] = useState<number>(0);
 
   const selectedLanguages = useMemo<{ value: string; label: string }[]>(() => {
     const langs = searchParams?.get("languages")?.split(",") || [];
@@ -100,5 +103,7 @@ export const useFilter = (
     updateSearchParams,
     selectedLanguages,
     selectedTypes,
+    totalPublicRepos,
+    setTotalPublicRepos,
   };
 };

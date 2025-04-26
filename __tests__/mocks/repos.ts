@@ -92,6 +92,7 @@ export const mockRepos: IRepository[] = [
     createdAt: new Date("2025-04-18T00:00:00Z"),
     mirrorUrl: undefined,
     forkCount: 0,
+    htmlUrl: undefined
   },
   {
     id: 2,
@@ -112,6 +113,7 @@ export const mockRepos: IRepository[] = [
     createdAt: new Date("2025-04-17T00:00:00Z"),
     mirrorUrl: undefined,
     forkCount: 0,
+    htmlUrl: undefined
   },
   {
     id: 2,
@@ -132,5 +134,6 @@ export const mockRepos: IRepository[] = [
     createdAt: new Date("2025-04-17T00:00:00Z"),
     mirrorUrl: undefined,
     forkCount: 0,
+    htmlUrl: undefined
   },
 ];

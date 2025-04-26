@@ -13,6 +13,8 @@ export interface IQueryOptions {
   perPage?: number;
   language?: string;
   user?: string;
+  sort?: string;
+  direction?: string;
 }
 
 export interface IRepoQueryOptions extends IQueryOptions {
