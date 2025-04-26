@@ -22,7 +22,7 @@ Antes de rodar o projeto, você precisa ter as seguintes dependências instalada
 2. Navegue até o diretório do projeto:
 
    ```bash
-   cd github-clone
+   cd g-nautilus
    ```
 
 3. Instale as dependências:
