@@ -27,6 +27,14 @@ export const SearchSection: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (searchInput.trim().length === 0) {
+      return;
+    }
+    if (searchInput === query) {
+      return;
+    }
+
     setProfiles([]);
     submitQuery();
     setHasSearched(false);
@@ -41,9 +49,7 @@ export const SearchSection: React.FC = () => {
   useEffect(() => {
     if (data) {
       setTotalCount(data.totalCount);
-      setProfiles((prev) =>
-        page === 1 ? data.items : [...prev, ...data.items]
-      );
+      setProfiles(data.items);
       if (page === 1) setHasSearched(true);
     }
   }, [data, page]);

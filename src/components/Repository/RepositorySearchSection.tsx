@@ -37,7 +37,7 @@ export const RepositorySearchSection: React.FC<
       if (data) {
         setFilteredRepos([...filteredRepos, ...data]);
       }
-      setCurrentPage((prev) => prev + 1); // 🔥 Incrementa a página depois de carregar
+      setCurrentPage((prev) => prev + 1);
     }
   }
 
