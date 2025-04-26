@@ -27,17 +27,29 @@ export const SearchSection: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (searchInput.trim().length === 0) {
+      return;
+    }
+    if (searchInput === query) {
+      return;
+    }
+
     setProfiles([]);
     submitQuery();
     setHasSearched(false);
   };
 
+  const handleLoadMore = () => {
+    if (!isFetching) {
+      useSearchStore.setState((state) => ({ page: state.page + 1 }));
+    }
+  };
+
   useEffect(() => {
     if (data) {
       setTotalCount(data.totalCount);
-      setProfiles((prev) =>
-        page === 1 ? data.items : [...prev, ...data.items]
-      );
+      setProfiles(data.items);
       if (page === 1) setHasSearched(true);
     }
   }, [data, page]);
@@ -80,10 +92,11 @@ export const SearchSection: React.FC = () => {
         hasSearched={hasSearched}
       />
       <LoadMoreButton
-        profilesLength={profiles.length}
+        itemsLength={profiles.length}
         totalCount={totalCount}
         isFetching={isFetching}
         hasSearched={hasSearched}
+        handleLoadMore={handleLoadMore}
       />
     </section>
   );

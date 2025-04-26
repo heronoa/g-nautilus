@@ -21,3 +21,5 @@ export const typeOptions: {
   { value: "Source", label: "Source" },
   { value: "Archived", label: "Archived" },
 ];
+
+export const MAX_PAGE_FETCH_ALL = 4;

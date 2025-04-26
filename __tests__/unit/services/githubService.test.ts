@@ -399,12 +399,16 @@ describe("Github Service - getAllUserRepos", () => {
 
     expect(githubService.getUserRepos).toHaveBeenCalledTimes(2);
     expect(githubService.getUserRepos).toHaveBeenCalledWith("usuarioTeste", {
-      perPage: 30,
+      direction: "desc",
       page: 1,
+      perPage: 30,
+      sort: "creation",
     });
     expect(githubService.getUserRepos).toHaveBeenCalledWith("usuarioTeste", {
       perPage: 30,
       page: 2,
+      direction: "desc",
+      sort: "creation",
     });
 
     expect(allRepos.items).toHaveLength(40);
@@ -528,6 +532,8 @@ describe("Github Service - getAllIssues", () => {
       {
         perPage: 30,
         page: 1,
+        direction: "desc",
+        sort: "creation",
       }
     );
     expect(githubService.getIssues).toHaveBeenCalledWith(
@@ -536,6 +542,8 @@ describe("Github Service - getAllIssues", () => {
       {
         perPage: 30,
         page: 2,
+        direction: "desc",
+        sort: "creation",
       }
     );
 

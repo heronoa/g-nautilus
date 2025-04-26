@@ -1,26 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { useSearchStore } from "@/store/SearchState";
 
 interface Props {
-  profilesLength: number;
+  itemsLength: number;
   totalCount: number;
   isFetching: boolean;
-  hasSearched: boolean;
+  hasSearched?: boolean;
+  handleLoadMore: () => void;
 }
 
 export const LoadMoreButton: React.FC<Props> = ({
-  profilesLength,
+  itemsLength,
   totalCount,
   isFetching,
-  hasSearched,
+  hasSearched = true,
+  handleLoadMore,
 }) => {
-  const show = hasSearched && !isFetching && profilesLength < totalCount;
-
-  const handleLoadMore = () => {
-    if (!isFetching) {
-      useSearchStore.setState((state) => ({ page: state.page + 1 }));
-    }
-  };
+  const show = hasSearched && !isFetching && itemsLength < totalCount;
 
   if (!show) return null;
 
